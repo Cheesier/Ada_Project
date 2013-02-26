@@ -1,4 +1,6 @@
 project Kladd is
 
+   for Main use ("main.adb");
+
 end Kladd;
 
