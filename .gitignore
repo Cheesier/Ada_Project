@@ -1,0 +1,6 @@
+
+
+# Ada specific compile files
+*.o
+*.ali
+*.exe
