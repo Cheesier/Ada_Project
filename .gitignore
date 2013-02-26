@@ -1,6 +1,11 @@
 
-
 # Ada specific compile files
 *.o
 *.ali
 *.exe
+
+# GPS specific files
+*.gpr
+
+# emacs
+*.*~
