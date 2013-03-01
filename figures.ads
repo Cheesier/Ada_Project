@@ -1,3 +1,13 @@
+-----------------------------------------------------------
+-- ADA Projekt
+--
+-- Oscar Thunberg,   oscth887
+-- Oskar Therén,     oskth878
+-- Viktor Persson, 	 ????
+-- Rasmus Thuresson, ????
+--
+-----------------------------------------------------------
+
 with Parts; use Parts;
 
 package Figures is

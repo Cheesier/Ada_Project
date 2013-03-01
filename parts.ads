@@ -1,3 +1,13 @@
+-----------------------------------------------------------
+-- ADA Projekt
+--
+-- Oscar Thunberg,   oscth887
+-- Oskar Therén,     oskth878
+-- Viktor Persson,    ????
+-- Rasmus Thuresson, ????
+--
+-----------------------------------------------------------
+
 package Parts is
 
    type X_Type(X : Positive) is private;
