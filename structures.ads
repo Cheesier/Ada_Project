@@ -1,3 +1,13 @@
+-----------------------------------------------------------
+-- ADA Projekt
+--
+-- Oscar Thunberg,   oscth887
+-- Oskar Therén,     oskth878
+-- Viktor Persson,   vikpe557
+-- Rasmus Thuresson, rasth297
+--
+-----------------------------------------------------------
+
 package Structures is
    type Structure_Type(X, Y, Z : Positive) is private;
 
