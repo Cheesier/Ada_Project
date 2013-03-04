@@ -3,8 +3,8 @@
 --
 -- Oscar Thunberg,   oscth887
 -- Oskar Therén,     oskth878
--- Viktor Persson, 	 ????
--- Rasmus Thuresson, ????
+-- Viktor Persson,   vikpe557
+-- Rasmus Thuresson, rasth297
 --
 -----------------------------------------------------------
 
