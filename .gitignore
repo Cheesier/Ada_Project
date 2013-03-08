@@ -9,3 +9,15 @@
 
 # emacs
 *.*~
+
+# server files
+*.jar
+
+# part and figure files
+*.parts
+*.figure
+*.txt
+
+# compile files
+run
+bin

@@ -1,0 +1,8 @@
+#!/bin/tcsh
+
+if ( ! -d "bin" ) then
+    mkdir bin
+    echo "Made the directory 'bin', output is stored there."
+endif
+gnatmake -D bin -o run `~TDDC68/lib/TJa/bin/tja_config` main.adb
+
