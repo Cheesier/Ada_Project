@@ -19,8 +19,16 @@ package Network is
                 return Boolean;
    function Get_Parts return Unbounded_String;
    function Get_Figure return Unbounded_String;
+
+   procedure Solution(Solution: in Unbounded_String);
+   procedure Give_Up(Id: in Natural);
+   function Get_Answer return Boolean; -- Continue or not?
+
+   procedure Get_Result;
    
 private
+   procedure Terminate_Session;
+
    type Packet_Type is 
       record
          Time: String(1..8);
