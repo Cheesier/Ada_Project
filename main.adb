@@ -9,7 +9,7 @@
 -----------------------------------------------------------
 
 --with figures; use figures;
-with Parts;
+with Part;
 with Ada.Text_IO; use Ada.Text_IO;
 with Network;
 with Coordinates; use Coordinates;

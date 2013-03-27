@@ -8,7 +8,7 @@
 --
 -----------------------------------------------------------
 
-with Parts;
+with Part;
 
 package Figure is
    type Figure_Type(Id: Natural; Fig_String: String; Part_Count: Positive := 1) 
