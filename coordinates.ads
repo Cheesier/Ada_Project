@@ -15,10 +15,15 @@ package Coordinates is
          X, Y, Z: Integer;
       end record;
    
-   type Bounding_Box is
+   type AABB is
       record
-         A: Vec3;
-         B: Vec3;
+         Min: Vec3;
+         Max: Vec3;
       end record;
-
+   
+   function Collides(A, B: in AABB) return Boolean;
+   function Find_Overlap(A, B: in AABB) return AABB;
+   procedure Put(Item: AABB);
+   procedure Put(Item: Vec3);
+   
 end Coordinates;

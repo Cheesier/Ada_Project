@@ -12,11 +12,14 @@
 with Parts;
 with Ada.Text_IO; use Ada.Text_IO;
 with Network;
+with Coordinates; use Coordinates;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Strings.Unbounded.Text_IO; use Ada.Strings.Unbounded.Text_IO;
 
 procedure main is
-	Id: Integer := 1;
+   Id: Integer := 1;
+   A, B: AABB;
+   Vec: Vec3;
 begin
 
    if Network.Init("localhost", 2400, To_Unbounded_String("Ost")) then
@@ -34,5 +37,8 @@ begin
    else
       Put_Line("Failed to establish connection to server");
    end if;
+   
+   A := AABB'(Vec3'(0, 0, 1), Vec3'(2, 4, 2));
+   B := AABB'(Vec3'(1, 2, 1), Vec3'(4, 3, 2));
 
 end main;

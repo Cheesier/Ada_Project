@@ -23,6 +23,16 @@ package body Parts is
       P.Origin_Displacement.Z := P.Origin_Displacement.Z + Z;
    end Move;
    
+   function Collides(A, B: in Part_Type) return Boolean is
+   begin
+      if Coordinates.Collides(A.Bounding, B.Bounding) then
+         -- find collide area
+         -- bit by bit collision
+         return True;
+      else
+         return False;
+      end if;
+   end Collides;
 
    function Parse_Part(Str: in Unbounded_String) return Part_Type is
       S: String := to_String(Str);

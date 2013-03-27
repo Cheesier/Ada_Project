@@ -32,10 +32,10 @@ package Parts is
    --function movement_to_string(P: in Part) return String;
 --     -- ^nothing to use?
 
---     procedure reset(P: in out Part_Type); -Resets to initial position
+--     procedure Reset(P: in out Part_Type); -Resets to initial position
 --
---     function collides(a, b: in Part_Type) return boolean;
---     function fits_in(left, right: in Part_Type) return boolean;
+   function Collides(A, B: in Part_Type) return Boolean;
+--     function Fits_In(left, right: in Part_Type) return boolean;
 
 private
    type Rot_Arr is
@@ -44,7 +44,7 @@ private
    type Part_Type(X, Y, Z: Integer) is
       record
          Origin_Displacement: Vec3; -- starts zeroed
-         Bounding: Bounding_Box; -- cache for Origin_Displacement
+         Bounding: AABB; -- cache for Origin_Displacement
          Structure: Structure_Type(X, Y, Z);
          Rotations: Rot_Arr := (others => 0);
       end record;
