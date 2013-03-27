@@ -10,12 +10,12 @@
 
 package Coordinates is
 	-- should be bounding box, and contain 2 coordinates
-   type Coord_Pair is
+   type Vec3 is
       record
          x, y, z : Positive;
+
+	--set-functon if possible?
       end record;
 
-   -- same change should be done here
-   function collides(a, b : in Coord_Pair) return Boolean;
 
 end Coordinates;
