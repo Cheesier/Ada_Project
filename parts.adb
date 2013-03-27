@@ -9,7 +9,27 @@
 -----------------------------------------------------------
 
 package body Parts is
+<<<<<<< HEAD
    procedure Get_Dimensions(P: in Part_Type; X, Y, Z: out Integer) is
+=======
+
+   procedure Rotate_X(P : in out Part_Type) is
+   begin
+      Rotate_X(P.Structure);
+   end Rotate_X;
+
+   procedure Rotate_Y(P : in out Part_Type) is
+   begin
+      Rotate_Y(P.Structure);
+   end Rotate_Y;
+
+   procedure Rotate_Z(P : in out Part_Type) is
+   begin
+      Rotate_Z(P.Structure);
+   end Rotate_Z;
+
+   procedure Get_Dimensions(P : in Part_Type; X, Y, Z : out Integer) is
+>>>>>>> Added Rotations for pieces
    begin
       X := P.X;
       Y := P.Y;
