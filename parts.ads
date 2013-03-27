@@ -38,8 +38,8 @@ package Parts is
 --     function Fits_In(left, right: in Part_Type) return boolean;
 
 private
-   type Rot_Arr is
-     array(1..3) of Natural;
+   type range_0_3 is range 0..3;
+   type Rot_Arr is array(1..3) of range_0_3;
 
    type Part_Type(X, Y, Z: Integer) is
       record
