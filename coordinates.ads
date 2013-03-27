@@ -9,13 +9,16 @@
 -----------------------------------------------------------
 
 package Coordinates is
-	-- should be bounding box, and contain 2 coordinates
+   
    type Vec3 is
       record
-         x, y, z : Positive;
-
-	--set-functon if possible?
+         X, Y, Z: Integer;
       end record;
-
+   
+   type Bounding_Box is
+      record
+         A: Vec3;
+         B: Vec3;
+      end record;
 
 end Coordinates;

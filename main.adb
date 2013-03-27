@@ -9,7 +9,7 @@
 -----------------------------------------------------------
 
 --with figures; use figures;
---with Parts; use parts;
+with Parts;
 with Ada.Text_IO; use Ada.Text_IO;
 with Network;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
@@ -20,7 +20,7 @@ procedure main is
 begin
 
    if Network.Init("localhost", 2400, To_Unbounded_String("Ost")) then
-      Put_Line("Success!");
+      Put_Line("Connection Established");
       Put_Line(Network.Get_Parts);
       Put_Line(Network.Get_Figure);
 
@@ -32,7 +32,7 @@ begin
       Network.Get_Result;
 
    else
-      Put_Line("Fail");
+      Put_Line("Failed to establish connection to server");
    end if;
 
 end main;
