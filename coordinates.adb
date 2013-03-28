@@ -31,6 +31,33 @@ package body Coordinates is
       end if;
    end Max;
 
+   function Positive_1(Item: in Vec3) return Vec3 is
+      Ret: Vec3 := Item;
+   begin
+      if Ret.X < 1 then Ret.X := 1; end if;
+      if Ret.Y < 1 then Ret.Y := 1; end if;
+      if Ret.Z < 1 then Ret.Z := 1; end if;
+      return Ret;
+   end Positive_1;
+
+   function "+"(Left, Right: in Vec3) return Vec3 is
+   begin
+      return Vec3'(Left.X + Right.X, Left.Y + Right.Y, Left.Z + Right.Z);
+   end "+";
+
+   function "-"(Left, Right: in Vec3) return Vec3 is
+   begin
+      return Vec3'(Left.X - Right.X, Left.Y - Right.Y, Left.Z - Right.Z);
+   end "-";
+
+   function "-"(Left: in AABB; Right: in Vec3) return AABB is
+      Ret: AABB;
+   begin
+      Ret.Min := Left.Min - Right;
+      Ret.Max := Left.Max - Right;
+      return Ret;
+   end "-";
+
    procedure Put(Item: Vec3) is
    begin
       Put("(");
@@ -46,8 +73,7 @@ package body Coordinates is
    begin
       Put(Item.Min);
       Put(Item.Max);
-   end Put; 
-
+   end Put;
    
    function Collides(A, B: in AABB) return Boolean is
    begin
