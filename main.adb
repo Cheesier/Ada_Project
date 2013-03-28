@@ -18,6 +18,8 @@ with Ada.Strings.Unbounded.Text_IO; use Ada.Strings.Unbounded.Text_IO;
 
 procedure main is
    Id: Integer := 1;
+   PartA: Part.Part_Type := Part.Parse_Part(To_Unbounded_String("2x2x2 11111111"));
+   PartB: Part.Part_Type := Part.Parse_Part(To_Unbounded_String("2x2x2 00000000"));
 begin
 
    if Network.Init("localhost", 2400, To_Unbounded_String("Ost")) then
@@ -34,6 +36,13 @@ begin
 
    else
       Put_Line("Failed to establish connection to server");
+   end if;
+
+   Part.Move(PartA, 1, 1, 1);
+   --Part.Move(PartB, 1, 1, 1);
+
+   if Part.Collides(PartA, PartB) then
+      Put("They collide");
    end if;
 
 end main;

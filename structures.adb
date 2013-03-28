@@ -8,6 +8,8 @@
 --
 -----------------------------------------------------------
 
+with Coordinates;
+
 package body Structures is
 
 
@@ -74,6 +76,36 @@ package body Structures is
    begin
       return S.Data(X, Y, Z);
    end Is_Occupied;
+
+   function Collides(A, B: in Structure_Access; Overlap: in AABB; Da, Db: in Vec3) return Boolean is
+   begin
+      Put(Da); Put(Db); New_Line;
+      for X in Overlap.Min.X+1..Overlap.Max.X loop
+         for Y in Overlap.Min.Y+1..Overlap.Max.Y loop
+            for Z in Overlap.Min.Z+1..Overlap.Max.Z loop
+               Put("Run ");
+               if Is_Occupied(A, X-Da.X, Y-Da.Y, Z-Da.Z) and Is_Occupied(B, X-Db.X, Y-Db.X, Z-Db.X) then
+                  return True;
+               end if;
+            end loop;
+         end loop;
+      end loop;
+      return False;
+   end Collides;
+
+   function Fits_Inside(A, B: in Structure_Access; Overlap: in AABB; D: in Vec3) return Boolean is
+   begin
+      for X in Overlap.Min.X..Overlap.Max.X loop
+         for Y in Overlap.Min.Y..Overlap.Max.Y loop
+            for Z in Overlap.Min.Z..Overlap.Max.Z loop
+               if Is_Occupied(A, X+D.X, Y+D.Y, Z+D.Z) and not Is_Occupied(B, X, Y, Z) then
+                  return False;
+               end if;
+            end loop;
+         end loop;
+      end loop;
+      return True;
+   end Fits_Inside;
 
    procedure Parse_Structure(Str : in Unbounded_String; Struct : in out Structure_Access) is
       S :  String := To_String(Str);

@@ -8,24 +8,27 @@
 --
 -----------------------------------------------------------
 
+with Structures;
+with Coordinates;
+
 package body Part is
 
-   procedure Rotate_X(P : in out Part_Type) is
+   procedure Rotate_X(P: in out Part_Type) is
    begin
       Rotate_X(P.Structure);
    end Rotate_X;
 
-   procedure Rotate_Y(P : in out Part_Type) is
+   procedure Rotate_Y(P: in out Part_Type) is
    begin
       Rotate_Y(P.Structure);
    end Rotate_Y;
 
-   procedure Rotate_Z(P : in out Part_Type) is
+   procedure Rotate_Z(P: in out Part_Type) is
    begin
       Rotate_Z(P.Structure);
    end Rotate_Z;
 
-   procedure Get_Dimensions(P : in Part_Type; X, Y, Z : out Integer) is
+   procedure Get_Dimensions(P: in Part_Type; X, Y, Z: out Integer) is
    begin
       X := P.X;
       Y := P.Y;
@@ -37,14 +40,20 @@ package body Part is
       P.Origin_Displacement.X := P.Origin_Displacement.X + X;
       P.Origin_Displacement.Y := P.Origin_Displacement.Y + Y;
       P.Origin_Displacement.Z := P.Origin_Displacement.Z + Z;
+
+      P.Bounding.Min := P.Origin_Displacement;
+      P.Bounding.Max := Coordinates.Vec3'(P.X, P.Y, P.Z) + P.Origin_Displacement;
    end Move;
    
    function Collides(A, B: in Part_Type) return Boolean is
    begin
       if Coordinates.Collides(A.Bounding, B.Bounding) then
-         -- find collide area
-         -- bit by bit collision
-         return True;
+         return Structures.Collides(
+                  A.Structure, 
+                  B.Structure,
+                  Coordinates.Find_Overlap(A.Bounding, B.Bounding),
+                  Coordinates.Positive_1(A.Origin_Displacement - B.Origin_Displacement),
+                  Coordinates.Positive_1(B.Origin_Displacement - A.Origin_Displacement));
       else
          return False;
       end if;
@@ -63,6 +72,10 @@ package body Part is
       --Put(Slice(Str, 7, Length(Str)));
       S(1..Length(Str)-6) := Slice(Str, 7, Length(Str));
       Parse_Structure(To_Unbounded_String(S(1..Length(Str)-6)), P.Structure);
+
+      P.Bounding.Min := P.Origin_Displacement;
+      P.Bounding.Max := Coordinates.Vec3'(P.X, P.Y, P.Z) + P.Origin_Displacement;
+
       Return(P);
    end Parse_Part;
 
