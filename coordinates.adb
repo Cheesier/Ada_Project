@@ -31,6 +31,15 @@ package body Coordinates is
       end if;
    end Max;
 
+   function Minimize(A, B: in Vec3) return Vec3 is
+      Ret: Vec3;
+   begin
+      Ret.X := Min(A.X, B.X);
+      Ret.Y := Min(A.Y, B.Y);
+      Ret.Z := Min(A.Z, B.Z);
+      return Ret;
+   end Minimize;
+
    function Positive_1(Item: in Vec3) return Vec3 is
       Ret: Vec3 := Item;
    begin
