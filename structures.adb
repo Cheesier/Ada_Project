@@ -25,10 +25,8 @@ package body Structures is
             end loop;
          end loop;
       end loop;
-      S.X := Temp.X;
-      S.Y := Temp.Y;
-      S.Z := Temp.Z;
-      S.Data := Temp.Data;
+      Free(S);
+      S := Temp;
    end Rotate_X;
 
    procedure Rotate_Y(S: in out Structure_Access) is
@@ -43,10 +41,8 @@ package body Structures is
             end loop;
          end loop;
       end loop;
-      S.X := Temp.X;
-      S.Y := Temp.Y;
-      S.Z := Temp.Z;
-      S.Data := Temp.Data;
+      Free(S);
+      S := Temp;
    end Rotate_Y;
 
    procedure Rotate_Z(S: in out Structure_Access) is
@@ -61,10 +57,8 @@ package body Structures is
             end loop;
          end loop;
       end loop;
-      S.X := Temp.X;
-      S.Y := Temp.Y;
-      S.Z := Temp.Z;
-      S.Data := Temp.Data;
+      Free(S);
+      S := Temp;
    end Rotate_Z;
 
    procedure Add(S : in out Structure_Access; X, Y, Z : in Integer) is

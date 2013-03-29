@@ -21,7 +21,7 @@ package Part is
 
    procedure Move(P: in out Part_Type; X, Y, Z: in Integer);
 
-   procedure Get_Dimensions(P: in Part_Type; X, Y, Z: out Integer);
+   procedure Get_Dimensions(U: in Unbounded_String; X, Y, Z, Len: out Integer);
    function Part_To_String(P: in Part_Type) return Unbounded_String;
    function Parse_Part(Str: in Unbounded_String) return Part_Type;
    --function movement_to_string(P: in Part) return String;
