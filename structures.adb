@@ -73,12 +73,12 @@ package body Structures is
 
    function Collides(A, B: in Structure_Access; Overlap: in AABB; Da, Db: in Vec3) return Boolean is
    begin
-      Put(Da); Put(Db); New_Line;
+      --Put(Da); Put(Db); New_Line;
       for X in Overlap.Min.X+1..Overlap.Max.X loop
          for Y in Overlap.Min.Y+1..Overlap.Max.Y loop
             for Z in Overlap.Min.Z+1..Overlap.Max.Z loop
-               Put("Run ");
-               if Is_Occupied(A, X-Da.X, Y-Da.Y, Z-Da.Z) and Is_Occupied(B, X-Db.X, Y-Db.X, Z-Db.X) then
+               --Put("Run ");Put(Vec3'(X, Y, Z)-Da); Put(Vec3'(X, Y, Z)-Db); New_Line; -- DEBUG
+               if Is_Occupied(A, X-Da.X+1, Y-Da.Y+1, Z-Da.Z+1) and Is_Occupied(B, X-Db.X+1, Y-Db.X+1, Z-Db.X+1) then
                   return True;
                end if;
             end loop;
@@ -87,12 +87,13 @@ package body Structures is
       return False;
    end Collides;
 
-   function Fits_Inside(A, B: in Structure_Access; Overlap: in AABB; D: in Vec3) return Boolean is
+   function Fits_Inside(A, B: in Structure_Access; Overlap: in AABB; Da, Db: in Vec3) return Boolean is
    begin
-      for X in Overlap.Min.X..Overlap.Max.X loop
-         for Y in Overlap.Min.Y..Overlap.Max.Y loop
-            for Z in Overlap.Min.Z..Overlap.Max.Z loop
-               if Is_Occupied(A, X+D.X, Y+D.Y, Z+D.Z) and not Is_Occupied(B, X, Y, Z) then
+      for X in Overlap.Min.X+1..Overlap.Max.X loop
+         for Y in Overlap.Min.Y+1..Overlap.Max.Y loop
+            for Z in Overlap.Min.Z+1..Overlap.Max.Z loop
+               --Put("Run ");Put(Vec3'(X, Y, Z)-Da); Put(Vec3'(X, Y, Z)-Db); New_Line; -- DEBUG
+               if Is_Occupied(A, X-Da.X+1, Y-Da.Y+1, Z-Da.Z+1) and not Is_Occupied(B, X-Db.X+1, Y-Db.X+1, Z-Db.X+1) then
                   return False;
                end if;
             end loop;

@@ -94,7 +94,9 @@ package body Part is
          return Structures.Collides(
                   A.Structure, 
                   B.Structure,
-                  Coordinates.Find_Overlap(A.Bounding, B.Bounding),
+                  Coordinates.Find_Overlap(A.Bounding, B.Bounding) - Coordinates.Minimize(
+                        A.Origin_Displacement, 
+                        B.Origin_Displacement),
                   Coordinates.Positive_1(A.Origin_Displacement - B.Origin_Displacement),
                   Coordinates.Positive_1(B.Origin_Displacement - A.Origin_Displacement));
       else
