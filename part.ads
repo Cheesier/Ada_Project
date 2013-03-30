@@ -31,8 +31,8 @@ package Part is
    procedure Rotate_Y(P : in out Part_Access);
    procedure Rotate_Z(P : in out Part_Access);
 
-   function Collides(A, B: in Part_Type) return Boolean;
---     function Fits_In(left, right: in Part_Type) return boolean;
+   function Collides(A, B: in Part_Access) return Boolean;
+   function Fits_In(A, B: in Part_Access) return boolean;
 
 private
    type range_0_3 is range 0..3;

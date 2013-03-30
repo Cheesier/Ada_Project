@@ -96,7 +96,7 @@ package body Part is
       P.Bounding.Max := Coordinates.Vec3'(P.X, P.Y, P.Z) + P.Origin_Displacement;
    end Move;
    
-   function Collides(A, B: in Part_Type) return Boolean is
+   function Collides(A, B: in Part_Access) return Boolean is
    begin
       if Coordinates.Collides(A.Bounding, B.Bounding) then
          return Structures.Collides(
@@ -111,6 +111,19 @@ package body Part is
          return False;
       end if;
    end Collides;
+
+   function Fits_In(A, B: in Part_Access) return Boolean is
+   begin
+      if Coordinates.Fits_In(A.Bounding, B.Bounding) then
+         return Structures.Fits_Inside(
+                                 A.Structure,
+                                 B.Structure, 
+                                 A.Bounding,
+                                 A.Origin_Displacement);
+      else
+         return False;
+      end if;
+   end Fits_In;
 
    function Parse_Part(Str: in Unbounded_String) return Part_Access is
       S: String := to_String(Str);

@@ -22,7 +22,7 @@ package Structures is
    procedure Rotate_Z(S: in out Structure_Access);
 
    function Collides(A, B: in Structure_Access; Overlap: in AABB; Da, Db: in Vec3) return Boolean;
-   function Fits_Inside(A, B: in Structure_Access; Overlap: in AABB; Da, Db: in Vec3) return Boolean;
+   function Fits_Inside(A, B: in Structure_Access; Overlap: in AABB; D: in Vec3) return Boolean;
 --
 --     function collides(a, b : in Structure_Type; Displacement : in Vec3) return boolean;
 --     function get_dimensions(S : in Structure_Type) return Vec3;

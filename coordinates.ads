@@ -29,6 +29,7 @@ package Coordinates is
    function Positive_1(Item: in Vec3) return Vec3;
    
    function Collides(A, B: in AABB) return Boolean;
+   function Fits_In(A, B: in AABB) return Boolean;
    function Find_Overlap(A, B: in AABB) return AABB;
    procedure Put(Item: AABB);
    procedure Put(Item: Vec3);

@@ -87,13 +87,12 @@ package body Structures is
       return False;
    end Collides;
 
-   function Fits_Inside(A, B: in Structure_Access; Overlap: in AABB; Da, Db: in Vec3) return Boolean is
+   function Fits_Inside(A, B: in Structure_Access; Overlap: in AABB; D: in Vec3) return Boolean is
    begin
       for X in Overlap.Min.X+1..Overlap.Max.X loop
          for Y in Overlap.Min.Y+1..Overlap.Max.Y loop
             for Z in Overlap.Min.Z+1..Overlap.Max.Z loop
-               --Put("Run ");Put(Vec3'(X, Y, Z)-Da); Put(Vec3'(X, Y, Z)-Db); New_Line; -- DEBUG
-               if Is_Occupied(A, X-Da.X+1, Y-Da.Y+1, Z-Da.Z+1) and not Is_Occupied(B, X-Db.X+1, Y-Db.X+1, Z-Db.X+1) then
+               if Is_Occupied(A, X-D.X+1, Y-D.Y+1, Z-D.Z+1) and not Is_Occupied(B, X+1, Y+1, Z+1) then
                   return False;
                end if;
             end loop;

@@ -86,11 +86,19 @@ package body Coordinates is
    
    function Collides(A, B: in AABB) return Boolean is
    begin
-      return 
+      return
         (A.Min.X < B.Max.X and A.Max.X > B.Min.X) and 
         (A.Min.Y < B.Max.Y and A.Max.Y > B.Min.Y) and 
         (A.Min.Z < B.Max.Z and A.Max.Z > B.Min.Z);
    end Collides;
+
+   function Fits_In(A, B: in AABB) return Boolean is
+   begin
+      return 
+        (A.Min.X > B.Min.X and A.Max.X < B.Max.X) and 
+        (A.Min.Y > B.Min.Y and A.Max.Y < B.Max.Y) and 
+        (A.Min.Z > B.Min.Z and A.Max.Z < B.Max.Z);
+   end Fits_In;
    
    function Find_Overlap(A, B: in AABB) return AABB is
       Ret: AABB;
