@@ -16,9 +16,9 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Strings.Unbounded.Text_IO; use Ada.Strings.Unbounded.Text_IO;
 
 package Part is
-
    type Part_Type(X, Y, Z: Integer) is private;
-
+   type Part_Access is
+      access Part_Type;
    procedure Move(P: in out Part_Type; X, Y, Z: in Integer);
 
    procedure Get_Dimensions(U: in Unbounded_String; X, Y, Z, Len: out Integer);

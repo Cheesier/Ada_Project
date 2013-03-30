@@ -16,19 +16,21 @@ package body Part is
    procedure Rotate_X(P: in out Part_Type) is
    begin
       Rotate_X(P.Structure);
-      if P.Rotations(0) /= 3 then
-         P.Rotations(0) := P.Rotations(0) + 1;
+      if P.Rotations(1) /= 3 then
+         P.Rotations(1) := P.Rotations(2) + 1;
       else
-         P.Rotations(0) := 0;
+         P.Rotations(1) := 0;
+      end if;
    end Rotate_X;
 
    procedure Rotate_Y(P: in out Part_Type) is
    begin
       Rotate_Y(P.Structure);
-      if P.Rotations(1) /= 3 then
-         P.Rotations(1) := P.Rotations(1) + 1;
+      if P.Rotations(2) /= 3 then
+         P.Rotations(2) := P.Rotations(2) + 1;
       else
-         P.Rotations(1) := 0;
+         P.Rotations(2) := 0;
+      end if;
    end Rotate_Y;
 
    procedure Rotate_Z(P: in out Part_Type) is
@@ -38,6 +40,7 @@ package body Part is
          P.Rotations(3) := P.Rotations(3) + 1;
       else
          P.Rotations(3) := 0;
+      end if;
    end Rotate_Z;
 
    procedure Get_Dimensions(U: in Unbounded_String; X, Y, Z, Len: out Integer) is
@@ -52,30 +55,30 @@ package body Part is
       C := S(I);
       I := I + 1;
       E := E + 1;
-   end loop;
-   X := Integer'Value(IntString(1..E-1));
-   IntString := "   ";
-   C := S(I);
-   E := 1;
-   while C /= 'x' loop
-      IntString(E) := C;
-      I := I + 1;
-      E := E + 1;
+      end loop;
+      X := Integer'Value(IntString(1..E-1));
+      IntString := "   ";
       C := S(I);
-   end loop;
-   Y := Integer'Value(IntString(1..E-1));
-   IntString := "   ";
-   I := I + 1;
-   C := S(I);
-   E := 1;
-   while C /= ' '  loop
-      IntString(E) := C;
+      E := 1;
+      while C /= 'x' loop
+         IntString(E) := C;
+         I := I + 1;
+         E := E + 1;
+         C := S(I);
+      end loop;
+      Y := Integer'Value(IntString(1..E-1));
+      IntString := "   ";
       I := I + 1;
-      E := E + 1;
       C := S(I);
-   end loop;
-   Z := Integer'Value(IntString(1..E-1));
-   Len := I;
+      E := 1;
+      while C /= ' '  loop
+         IntString(E) := C;
+         I := I + 1;
+         E := E + 1;
+         C := S(I);
+      end loop;
+      Z := Integer'Value(IntString(1..E-1));
+      Len := I;
    end Get_Dimensions;
    
    procedure Move(P: in out Part_Type; X, Y, Z: in Integer) is

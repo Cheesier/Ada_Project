@@ -8,24 +8,24 @@
 --
 -----------------------------------------------------------
 with Part; use Part;
+with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package Handler is
    type Part_Arr is 
-      array(Integer range <>) of Part_Type(1, 1, 1);
-   type Handler_Type(Fig: Unbounded_String; Nr_Of_Parts: Positive) is private;
+      array(Integer range <>) of Part_Access;
+   type Handler_Type(P: Part_Access; Nr_Of_Parts: Positive) is private;
 
-   procedure Add_Parts(Parts: in Unbounded_String);
-   procedure Split_Part_String(H: in Handler_Type; U: in Unbounded_String);
-
+   procedure Split_Part_String(H: in out Handler_Type; U: in Unbounded_String);
+   function Parse_Figure(U: in Unbounded_String) return Part_Type;
 
 --When comparing the figure to the Parts you have to take into
 --account the displacement!
 
 private
-   type Handler_Type(Fig: Unbounded_String; Nr_Of_Parts: Positive) is
+   type Handler_Type(P: Part_Access; Nr_Of_Parts: Positive) is
       record
-         Figure: Part_Type := Parse_Part(Fig);
+         Figure: Part_Access := P;
          Parts: Part_Arr(1..Nr_Of_Parts);
       end record;
 

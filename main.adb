@@ -9,10 +9,10 @@
 -----------------------------------------------------------
 
 --with figures; use figures;
-with Part;
+with Part; use Part;
 with Ada.Text_IO; use Ada.Text_IO;
 with Network;
-with Handler; use Handler;
+--with Handler; use Handler;
 with Coordinates; use Coordinates;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Strings.Unbounded.Text_IO; use Ada.Strings.Unbounded.Text_IO;
@@ -21,9 +21,11 @@ procedure main is
    Id: Integer := 1;
    PartA: Part.Part_Type := Part.Parse_Part(To_Unbounded_String("2x2x2 11111111"));
    PartB: Part.Part_Type := Part.Parse_Part(To_Unbounded_String("2x2x2 00000000"));
-   Handle: Handler_Type(To_Unbounded_String("2x2x2 11001100"), 2);
+   --Test: Part.Part_Type := Part.Parse_Part(To_Unbounded_String("2x2x2 11001100"));
+   Test : Part_Access; -- := new Part.Parse_Part(To_Unbounded_String("2x2x2 11001100"));
+   --Handle: Handler_Type(Test, 2);
 begin
-
+   Test := PartA; --new Part.Parse_Part(To_Unbounded_String("2x2x2 11001100"));
    if Network.Init("localhost", 2400, To_Unbounded_String("Ost")) then
       Put_Line("Connection Established");
       Put_Line(Network.Get_Parts);
@@ -47,6 +49,6 @@ begin
       Put("They collide");
    end if;
 
-   Split_Part_String(Handle, To_Unbounded_String("2 1x2x1 11 2x2x1 1001"));
+   --Split_Part_String(Handle, To_Unbounded_String("2 1x2x1 11 2x2x1 1001"));
 
 end main;
