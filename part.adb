@@ -13,7 +13,12 @@ with Coordinates;
 
 package body Part is
 
-   procedure Rotate_X(P: in out Part_Type) is
+   procedure Put(P: in Part_Access) is
+   begin
+      Put(Part_To_String(P));
+   end Put;
+   
+   procedure Rotate_X(P: in out Part_Access) is
    begin
       Rotate_X(P.Structure);
       if P.Rotations(1) /= 3 then
@@ -23,7 +28,7 @@ package body Part is
       end if;
    end Rotate_X;
 
-   procedure Rotate_Y(P: in out Part_Type) is
+   procedure Rotate_Y(P: in out Part_Access) is
    begin
       Rotate_Y(P.Structure);
       if P.Rotations(2) /= 3 then
@@ -33,7 +38,7 @@ package body Part is
       end if;
    end Rotate_Y;
 
-   procedure Rotate_Z(P: in out Part_Type) is
+   procedure Rotate_Z(P: in out Part_Access) is
    begin
       Rotate_Z(P.Structure);
       if P.Rotations(3) /= 3 then
@@ -107,27 +112,23 @@ package body Part is
       end if;
    end Collides;
 
-   function Parse_Part(Str: in Unbounded_String) return Part_Type is
+   function Parse_Part(Str: in Unbounded_String) return Part_Access is
       S: String := to_String(Str);
-      X: Integer := Integer'Value(S(1..1));
-      Y: Integer := Integer'Value(S(3..3));
-      Z: Integer := Integer'Value(S(5..5));
-      P: Part_Type(X, Y, Z);
+      X, Y, Z, Len: Integer;
+      P: Part_Access;
    begin
-      --Can we put the dimensions to the buffer?
-      --P.Structure := Structure_Type(X, Y, Z);
-      --Put(length(Str), 0);
-      --Put(Slice(Str, 7, Length(Str)));
-      S(1..Length(Str)-6) := Slice(Str, 7, Length(Str));
-      Parse_Structure(To_Unbounded_String(S(1..Length(Str)-6)), P.Structure);
+      Get_Dimensions(Str, X, Y, Z, Len);
+      P := new Part_Type(X, Y, Z);
+      S(1..Length(Str)-Len) := Slice(Str, Len+1, Length(Str));
+      Parse_Structure(To_Unbounded_String(S(1..Length(Str)-Len)), P.Structure);
 
       P.Bounding.Min := P.Origin_Displacement;
-      P.Bounding.Max := Coordinates.Vec3'(P.X, P.Y, P.Z) + P.Origin_Displacement;
+      P.Bounding.Max := Coordinates.Vec3'(X, Y, Z) + P.Origin_Displacement;
 
       Return(P);
    end Parse_Part;
 
-   function Part_To_String(P: in Part_Type) return Unbounded_String is
+   function Part_To_String(P: in Part_Access) return Unbounded_String is
       S: Unbounded_String;
    begin
       return Structure_To_String(P.Structure);

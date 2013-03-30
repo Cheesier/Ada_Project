@@ -18,17 +18,18 @@ with Ada.Strings.Unbounded.Text_IO; use Ada.Strings.Unbounded.Text_IO;
 package Part is
    type Part_Type(X, Y, Z: Integer) is private;
    type Part_Access is
-      access Part_Type;
+      access all Part_Type;
    procedure Move(P: in out Part_Type; X, Y, Z: in Integer);
 
+   procedure Put(P: in Part_Access);
    procedure Get_Dimensions(U: in Unbounded_String; X, Y, Z, Len: out Integer);
-   function Part_To_String(P: in Part_Type) return Unbounded_String;
-   function Parse_Part(Str: in Unbounded_String) return Part_Type;
+   function Part_To_String(P: in Part_Access) return Unbounded_String;
+   function Parse_Part(Str: in Unbounded_String) return Part_Access;
    --function movement_to_string(P: in Part) return String;
 
-   procedure Rotate_X(P : in out Part_Type);
-   procedure Rotate_Y(P : in out Part_Type);
-   procedure Rotate_Z(P : in out Part_Type);
+   procedure Rotate_X(P : in out Part_Access);
+   procedure Rotate_Y(P : in out Part_Access);
+   procedure Rotate_Z(P : in out Part_Access);
 
    function Collides(A, B: in Part_Type) return Boolean;
 --     function Fits_In(left, right: in Part_Type) return boolean;

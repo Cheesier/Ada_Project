@@ -10,7 +10,15 @@
 
 package body Handler is
 
-   function Parse_Figure(U: in Unbounded_String) return Part_Type is
+   procedure Put(H: in Handler_Type) is
+   begin
+      for I in 1..H.Parts'Length loop
+         Put(H.Parts(I));
+         New_Line;
+      end loop;
+   end Put;
+
+   function Parse_Figure(U: in Unbounded_String) return Part_Access is
    begin
       return Parse_Part(U);
    end Parse_Figure;
@@ -42,8 +50,6 @@ package body Handler is
             I := I + 1;
             E := E + 1;
          end loop;
-         Put("After First loop");
-         New_Line;
          X := Integer'Value(IntString(1..E-1));
          IntString := "   ";
          C := S(I);
@@ -69,7 +75,7 @@ package body Handler is
          IntString := "   ";
          E := 1;
             
-         H.Parts(K) := new Parse_Part(To_Unbounded_String(Slice(U, Start+1, I+X*Y*Z)));
+         H.Parts(K) := Parse_Part(To_Unbounded_String(Slice(U, Start+1, I+X*Y*Z)));
          Start := I+X*Y*Z+1;
          I := I + X*Y*Z + 1;
       end loop;

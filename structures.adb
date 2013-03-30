@@ -108,7 +108,6 @@ package body Structures is
       Y : Integer := Struct.Y;
       Z : Integer := Struct.Z;
    begin
-      New_Line;
       for I in 1..Z loop
          for J in 1..Y loop
             for K in 1..X loop

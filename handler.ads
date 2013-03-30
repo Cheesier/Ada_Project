@@ -16,8 +16,9 @@ package Handler is
       array(Integer range <>) of Part_Access;
    type Handler_Type(P: Part_Access; Nr_Of_Parts: Positive) is private;
 
+   procedure Put(H: in Handler_Type);
    procedure Split_Part_String(H: in out Handler_Type; U: in Unbounded_String);
-   function Parse_Figure(U: in Unbounded_String) return Part_Type;
+   function Parse_Figure(U: in Unbounded_String) return Part_Access;
 
 --When comparing the figure to the Parts you have to take into
 --account the displacement!
