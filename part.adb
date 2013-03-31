@@ -162,7 +162,7 @@ package body Part is
       Parse_Structure(To_Unbounded_String(S(1..Length(Str)-Len)), P.Structure);
       Parse_Structure(To_Unbounded_String(S(1..Length(Str)-Len)), P.Start_Struct);
 
-      P.Bounding.Min := P.Origin_Displacement;
+      P.Bounding.Min := P.Origin_Displacement + Coordinates.Vec3'(1, 1, 1);
       P.Bounding.Max := Coordinates.Vec3'(X, Y, Z) + P.Origin_Displacement;
 
       Return(P);
@@ -233,6 +233,8 @@ package body Part is
       Part_Dim: Vec3 := Get_Dimensions(Part);
       Fig_Dim: Vec3 := Get_Dimensions(Fig);
    begin
+      Put("I Next_Pos");
+      New_Line;
       if Part.Origin_Displacement.X + Part_Dim.X < Fig_Dim.X then
          Move(Part, 1, 0, 0);
       else
