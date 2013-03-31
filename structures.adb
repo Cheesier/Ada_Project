@@ -45,8 +45,14 @@ package body Structures is
       S := Temp;
    end Rotate_Y;
 
+
+   function Get_Dimensions(S: in Structure_Type) return Vec3 is
+   begin
+      return Vec3'(S.X, S.Y, S.Z);
+   end Get_Dimensions;
+
    procedure Rotate_Z(S: in out Structure_Access) is
-      Temp : Structure_Access := new Structure_Type(S.Y, S.X, S.Z);
+      Temp : Structure_Access := new Structure_Type(S.Y, S.X, S.Z);  
    begin
       for X in reverse 1..S.X loop
          for Y in 1..S.Y loop
@@ -60,6 +66,21 @@ package body Structures is
       Free(S);
       S := Temp;
    end Rotate_Z;
+
+   function Get_Nr_Of_Blocks(S: in Structure_Access) return Integer is
+      Count: Integer := 0;
+   begin
+      for X in 1..S.X loop
+         for Y in 1..S.Y loop
+            for Z in 1..S.Z loop
+               if Is_Occupied(S, X, Y, Z) then
+                  Count := Count + 1;
+               end if;
+            end loop;
+         end loop;
+      end loop;
+      return Count;
+   end Get_Nr_Of_Blocks;
 
    procedure Add(S : in out Structure_Access; X, Y, Z : in Integer) is
    begin

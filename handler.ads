@@ -16,6 +16,9 @@ package Handler is
       array(Integer range <>) of Part_Access;
    type Handler_Type(P: Part_Access; Nr_Of_Parts: Positive) is private;
 
+
+   procedure Solver(H: in out Handler_Type; Bool: out Boolean);
+   function Block_Check(H: in Handler_Type) return Boolean;
    procedure Put(H: in Handler_Type);
    procedure Split_Part_String(H: in out Handler_Type; U: in Unbounded_String);
    function Parse_Figure(U: in Unbounded_String) return Part_Access;

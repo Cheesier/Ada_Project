@@ -128,10 +128,55 @@ package body Part is
       Return(P);
    end Parse_Part;
 
+   function Get_Dimensions(P: in Part_Access) return Vec3 is
+   begin
+      return Get_Dimensions(P.Structure);
+   end Get_Dimensions;
+
+   function Get_Nr_Of_Blocks(P: in Part_Access) return Integer is
+   begin
+      return Get_Nr_Of_Blocks(P.Structure);
+   end Get_Nr_Of_Blocks;
+
    function Part_To_String(P: in Part_Access) return Unbounded_String is
       S: Unbounded_String;
    begin
       return Structure_To_String(P.Structure);
    end Part_To_String;
+
+   procedure Next_Pos(Fig: in Part_Access; Part in out Part_Access; B: out Boolean) is
+      Part_Dim: Vec3 := Get_Dimensions(Part);
+      Fig_Dim: Vec3 := Get_Dimensions(Fig);
+   begin
+      if Part.Origin_Displacement'X + Vec3'X < Fig_Dim'X then
+         Part.Origin_Displacement'X := Part.Origin_Displacement'X + 1;
+      else
+         Part_Dim := (X=>1);
+         if Part.Origin_Displacement'Y + Vec3'Y < Fig_Dim'Y then
+            Part.Origin_Displacement'Y := Part.Origin_Displacement'Y + 1;
+         else
+            Part_Dim := (Y=>1);
+            if Part.Origin_Displacement'Z + Vec3'Z < Fig_Dim'Z then
+               Part.Origin_Displacement'Z := Part.Origin_Displacement'Z + 1;
+            else
+               Part_Dim := (Z=>1);
+               if Part.Rotations(1) < 3  then
+                  Rotate_X(Part);
+               else
+                  if Part.Rotations(2) < 3 then
+                     Rotate_Y(Part);
+                  else
+                     if Part.Rotations(3) < 3 then
+                        Rotate_Z(Part);
+                     else
+                        return False;
+                     end if;
+                  end if;
+               end if;
+            end if;
+         end if;
+      end if;
+      return True;
+   end Next_Pos;
 
 end Part;

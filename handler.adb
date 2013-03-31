@@ -23,6 +23,49 @@ package body Handler is
       return Parse_Part(U);
    end Parse_Figure;
 
+   procedure Solver(H: in out Handler_Type; Bool: out Boolean) is
+      B: Boolean := True;
+      Solved: Boolean := False;
+      I: Integer := 1;
+   begin
+      while I <= H.Parts'Length loop
+         if not Fits_In(H.Parts(I), H.Figure) then
+            Next_Pos(H.Parts(I), H.Figure, B);
+            if not B and I /= 1 then
+               I := I - 2;
+            else
+               exit;
+            end if;
+         else
+            for J in 1..I-1 loop
+               if Collides(H.Parts(J), H.Parts(I)) then
+                  Next_Pos(H.Parts(I), H.Figure, B);
+                  exit;
+               end if;
+            end loop;
+           if not B and I /= 1 then
+               I := I - 1;
+            else
+               exit;
+            end if;
+         end if;
+         if not B then
+            exit;
+         end if;
+         I := I + 1;
+      end loop;
+      Bool := B;
+   end Solver;
+
+   function Block_Check(H: in Handler_Type) return Boolean is
+      Count: Integer := 0;
+   begin
+      for I in 1..H.Parts'Length loop
+         Count := Count + Get_Nr_Of_Blocks(H.Parts(I));
+      end loop;
+      return Count = Get_Nr_Of_Blocks(H.Figure);
+   end Block_Check;
+
    procedure Split_Part_String(H: in out Handler_Type; U: in Unbounded_String) is
       IntString: String := "   ";
       S: String := To_String(U);
