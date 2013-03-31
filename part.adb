@@ -10,19 +10,42 @@
 
 with Structures;
 with Coordinates;
+with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 
 package body Part is
 
    procedure Put(P: in Part_Access) is
    begin
       Put(Part_To_String(P));
+      New_Line;
+      Coordinates.Put(P.Origin_Displacement);
+      New_Line;
+      Put(P.Rotations(1), 0);
+      New_Line;
+      Put(P.Rotations(2), 0);
+      New_Line;
+      Put(P.Rotations(3), 0);
+      New_Line;
    end Put;
    
+   function Get_Result(P: in Part_Access) return Unbounded_String is
+      U: Unbounded_String;
+   begin
+      Append(U, " !");
+      for I in 1..3 loop
+         Append(U, Integer'Image(P.Rotations(I)));
+      end loop;
+      Append(U, Integer'Image(P.Origin_Displacement.X));
+      Append(U, Integer'Image(P.Origin_Displacement.Y));
+      Append(U, Integer'Image(P.Origin_Displacement.Z));
+      return U;
+   end Get_Result;
+
    procedure Rotate_X(P: in out Part_Access) is
    begin
       Rotate_X(P.Structure);
       if P.Rotations(1) /= 3 then
-         P.Rotations(1) := P.Rotations(2) + 1;
+         P.Rotations(1) := P.Rotations(1) + 1;
       else
          P.Rotations(1) := 0;
       end if;
@@ -86,7 +109,7 @@ package body Part is
       Len := I;
    end Get_Dimensions;
    
-   procedure Move(P: in out Part_Type; X, Y, Z: in Integer) is
+   procedure Move(P: in out Part_Access; X, Y, Z: in Integer) is
    begin
       P.Origin_Displacement.X := P.Origin_Displacement.X + X;
       P.Origin_Displacement.Y := P.Origin_Displacement.Y + Y;
@@ -134,6 +157,7 @@ package body Part is
       P := new Part_Type(X, Y, Z);
       S(1..Length(Str)-Len) := Slice(Str, Len+1, Length(Str));
       Parse_Structure(To_Unbounded_String(S(1..Length(Str)-Len)), P.Structure);
+      Parse_Structure(To_Unbounded_String(S(1..Length(Str)-Len)), P.Start_Struct);
 
       P.Bounding.Min := P.Origin_Displacement;
       P.Bounding.Max := Coordinates.Vec3'(X, Y, Z) + P.Origin_Displacement;
@@ -143,7 +167,7 @@ package body Part is
 
    function Get_Dimensions(P: in Part_Access) return Vec3 is
    begin
-      return Get_Dimensions(P.Structure);
+      return Structures.Get_Dimensions(P.Structure);
    end Get_Dimensions;
 
    function Get_Nr_Of_Blocks(P: in Part_Access) return Integer is
@@ -157,39 +181,75 @@ package body Part is
       return Structure_To_String(P.Structure);
    end Part_To_String;
 
-   procedure Next_Pos(Fig: in Part_Access; Part in out Part_Access; B: out Boolean) is
+   procedure Reset_Rotations(P: in out Part_Access) is
+      dim: Vec3 := Get_Dimensions(P);
+   begin
+      Free_Memory(P.Structure);
+      P.Structure := new Structure_Type(dim.X, dim.Y, dim.Z);
+      P.Structure.all := P.Start_Struct.all;
+      P.Rotations := (others => 0);
+   end Reset_Rotations;
+
+   procedure Rotate_Next(P: in out Part_Access; B: out Boolean) is
+   begin
+      if P.Rotations(3) < 3 then
+         Rotate_Z(P);
+      else
+         Rotate_Z(P);
+         if P.Rotations(2) < 3 then
+            Rotate_Y(P);
+         else
+            Rotate_Y(P);
+            if P.Rotations(1) < 3 then
+               Rotate_X(P);
+            else
+               Rotate_X(P);
+               B := False;
+               return;
+            end if;
+         end if;
+      end if;
+      B := True;
+   end Rotate_Next;
+
+   procedure Rotate(P: in out Part_Access; X, Y, Z: in Integer) is
+   begin
+      Reset_Rotations(P);
+      for i in 1..X loop
+         Rotate_X(P);
+      end loop;
+      for i in 1..Y loop
+         Rotate_Y(P);
+      end loop;
+      for i in 1..Z loop
+         Rotate_Z(P);
+      end loop;
+   end Rotate;
+
+   procedure Next_Pos(Fig: in Part_Access; Part: in out Part_Access; B: out Boolean) is
       Part_Dim: Vec3 := Get_Dimensions(Part);
       Fig_Dim: Vec3 := Get_Dimensions(Fig);
    begin
-      if Part.Origin_Displacement'X + Vec3'X < Fig_Dim'X then
-         Part.Origin_Displacement'X := Part.Origin_Displacement'X + 1;
+      if Part.Origin_Displacement.X + Part_Dim.X < Fig_Dim.X then
+         Move(Part, 1, 0, 0);
       else
-         Part_Dim := (X=>1);
-         if Part.Origin_Displacement'Y + Vec3'Y < Fig_Dim'Y then
-            Part.Origin_Displacement'Y := Part.Origin_Displacement'Y + 1;
+         Part.Origin_Displacement.X := 0;
+         if Part.Origin_Displacement.Y + Part_Dim.Y < Fig_Dim.Y then
+            Move(Part, 0, 1, 0);
          else
-            Part_Dim := (Y=>1);
-            if Part.Origin_Displacement'Z + Vec3'Z < Fig_Dim'Z then
-               Part.Origin_Displacement'Z := Part.Origin_Displacement'Z + 1;
+            Part.Origin_Displacement.Y := 0;
+            if Part.Origin_Displacement.Z + Part_Dim.Z < Fig_Dim.Z then
+               Move(Part, 0, 0, 1);
             else
-               Part_Dim := (Z=>1);
-               if Part.Rotations(1) < 3  then
-                  Rotate_X(Part);
-               else
-                  if Part.Rotations(2) < 3 then
-                     Rotate_Y(Part);
-                  else
-                     if Part.Rotations(3) < 3 then
-                        Rotate_Z(Part);
-                     else
-                        return False;
-                     end if;
-                  end if;
+               Part.Origin_Displacement.Z := 0;
+               Rotate_Next(Part, B);
+               if not B then
+                  return;
                end if;
             end if;
          end if;
       end if;
-      return True;
+      B:= True;
    end Next_Pos;
 
 end Part;

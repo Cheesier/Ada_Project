@@ -22,12 +22,12 @@ package Structures is
    procedure Rotate_Z(S: in out Structure_Access);
    function Get_Nr_Of_Blocks(S: in Structure_Access) return Integer;
 
+   procedure Free_Memory(S: in out Structure_Access);
 
    function Collides(A, B: in Structure_Access; Overlap: in AABB; Da, Db: in Vec3) return Boolean;
    function Fits_Inside(A, B: in Structure_Access; Overlap: in AABB; D: in Vec3) return Boolean;
---
 --     function collides(a, b : in Structure_Type; Displacement : in Vec3) return boolean;
-   function Get_Dimensions(S: in Structure_Type) return Vec3;
+   function Get_Dimensions(S: in Structure_Access) return Vec3;
 --     -- ^ Needs to return a pair of Vec3! ^
 --     function structure_to_string(S : in Structure_Type) return String;
    procedure Add(S: in out Structure_Access; X,Y,Z: in Integer);
@@ -45,7 +45,7 @@ private
          Z : Integer := iZ;
          Data : Test_Arr(1..iX, 1..iY, 1..iZ) := (others => (others =>(others => false)));
       end record;
-
    procedure Free is new Ada.Unchecked_Deallocation
      (Object => Structure_Type, Name => Structure_Access);
+
 end Structures;

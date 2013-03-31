@@ -7,6 +7,7 @@
 -- Rasmus Thuresson, rasth297
 --
 -----------------------------------------------------------
+with Ada.Strings; use Ada.Strings;
 
 package body Handler is
 
@@ -17,6 +18,16 @@ package body Handler is
          New_Line;
       end loop;
    end Put;
+
+   function Get_Result(H: in Handler_Type) return Unbounded_String is
+      U: Unbounded_String;
+   begin
+      Append(U, Trim(To_Unbounded_String(Integer'Image(H.Id)), Ada.Strings.Left));
+      for I in 1..H.Parts'Length loop
+         Append(U, Get_Result(H.Parts(I)));
+      end loop;
+      return U;
+   end Get_Result;
 
    function Parse_Figure(U: in Unbounded_String) return Part_Access is
    begin

@@ -45,8 +45,7 @@ package body Structures is
       S := Temp;
    end Rotate_Y;
 
-
-   function Get_Dimensions(S: in Structure_Type) return Vec3 is
+   function Get_Dimensions(S: in Structure_Access) return Vec3 is
    begin
       return Vec3'(S.X, S.Y, S.Z);
    end Get_Dimensions;
@@ -166,4 +165,10 @@ package body Structures is
       end loop;
       return S;
    end;
+
+   procedure Free_Memory(S: in out Structure_Access) is
+   begin
+      Free(S);
+   end Free_Memory;
+  
 end Structures;

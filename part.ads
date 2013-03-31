@@ -19,8 +19,13 @@ package Part is
    type Part_Type(X, Y, Z: Integer) is private;
    type Part_Access is
       access all Part_Type;
-   procedure Move(P: in out Part_Type; X, Y, Z: in Integer);
+   procedure Move(P: in out Part_Access; X, Y, Z: in Integer);
 
+
+   function Get_Result(P: in Part_Access) return Unbounded_String;
+   procedure Rotate_Next(P: in out Part_Access; B: out Boolean);
+   procedure Rotate(P: in out Part_Access; X, Y, Z: in Integer);
+   procedure Reset_Rotations(P: in out Part_Access);
    procedure Put(P: in Part_Access);
    procedure Get_Dimensions(U: in Unbounded_String; X, Y, Z, Len: out Integer);
    function Get_Dimensions(P: in Part_Access) return Vec3;   
@@ -38,14 +43,14 @@ package Part is
    function Fits_In(A, B: in Part_Access) return boolean;
 
 private
-   type range_0_3 is range 0..3;
-   type Rot_Arr is array(1..3) of range_0_3;
+   type Rot_Arr is array(1..3) of Integer;
 
    type Part_Type(X, Y, Z: Integer) is
       record
          Origin_Displacement: Vec3; -- starts zeroed
          Bounding: AABB; -- cache for Origin_Displacement
          Structure: Structure_Access := new Structure_Type(X, Y, Z);
+         Start_Struct: Structure_Access := new Structure_Type(X, Y, Z);
          Rotations: Rot_Arr := (others => 0);
       end record;
 

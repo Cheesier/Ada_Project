@@ -14,9 +14,9 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 package Handler is
    type Part_Arr is 
       array(Integer range <>) of Part_Access;
-   type Handler_Type(P: Part_Access; Nr_Of_Parts: Positive) is private;
+   type Handler_Type(P: Part_Access; Nr_Of_Parts: Positive; Fig_Id: Integer) is private;
 
-
+   function Get_Result(H: in Handler_Type) return Unbounded_String;
    procedure Solver(H: in out Handler_Type; Bool: out Boolean);
    function Block_Check(H: in Handler_Type) return Boolean;
    procedure Put(H: in Handler_Type);
@@ -27,8 +27,9 @@ package Handler is
 --account the displacement!
 
 private
-   type Handler_Type(P: Part_Access; Nr_Of_Parts: Positive) is
+   type Handler_Type(P: Part_Access; Nr_Of_Parts: Positive; Fig_Id: Integer) is
       record
+         Id: Integer := Fig_Id;
          Figure: Part_Access := P;
          Parts: Part_Arr(1..Nr_Of_Parts);
       end record;
