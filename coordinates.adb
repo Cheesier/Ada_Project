@@ -95,9 +95,9 @@ package body Coordinates is
    function Fits_In(A, B: in AABB) return Boolean is
    begin
       return 
-        (A.Min.X > B.Min.X and A.Max.X < B.Max.X) and 
-        (A.Min.Y > B.Min.Y and A.Max.Y < B.Max.Y) and 
-        (A.Min.Z > B.Min.Z and A.Max.Z < B.Max.Z);
+        (A.Min.X >= B.Min.X and A.Max.X <= B.Max.X) and 
+        (A.Min.Y >= B.Min.Y and A.Max.Y <= B.Max.Y) and 
+        (A.Min.Z >= B.Min.Z and A.Max.Z <= B.Max.Z);
    end Fits_In;
    
    function Find_Overlap(A, B: in AABB) return AABB is
