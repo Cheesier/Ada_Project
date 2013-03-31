@@ -49,6 +49,7 @@ package body Part is
       else
          P.Rotations(1) := 0;
       end if;
+      P.Bounding.Max := P.Origin_Displacement + Get_Dimensions(P.Structure);
    end Rotate_X;
 
    procedure Rotate_Y(P: in out Part_Access) is
@@ -59,6 +60,7 @@ package body Part is
       else
          P.Rotations(2) := 0;
       end if;
+      P.Bounding.Max := P.Origin_Displacement + Get_Dimensions(P.Structure);
    end Rotate_Y;
 
    procedure Rotate_Z(P: in out Part_Access) is
@@ -69,6 +71,7 @@ package body Part is
       else
          P.Rotations(3) := 0;
       end if;
+      P.Bounding.Max := P.Origin_Displacement + Get_Dimensions(P.Structure);
    end Rotate_Z;
 
    procedure Get_Dimensions(U: in Unbounded_String; X, Y, Z, Len: out Integer) is
