@@ -234,6 +234,8 @@ package body Part is
       Part_Dim: Vec3 := Get_Dimensions(Part);
       Fig_Dim: Vec3 := Get_Dimensions(Fig);
    begin
+      Put("I Next_Pos");
+      New_Line;
       if Part.Origin_Displacement.X + Part_Dim.X < Fig_Dim.X then
          Move(Part, 1, 0, 0);
       else

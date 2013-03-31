@@ -38,6 +38,7 @@ begin
       Split_Part_String(Handle, Network.Get_Parts);
       Solver(Handle, B);
       Put(To_String(Get_Result(Handle)));
+      New_Line;
       if B then
          Network.Solution(Get_Result(Handle));
       else

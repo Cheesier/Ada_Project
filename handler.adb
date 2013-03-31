@@ -8,6 +8,7 @@
 --
 -----------------------------------------------------------
 with Ada.Strings; use Ada.Strings;
+with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 
 package body Handler is
 
@@ -39,9 +40,15 @@ package body Handler is
       Solved: Boolean := False;
       I: Integer := 1;
    begin
+      Put("Length: "); Put(H.Parts'Length); New_Line;
+      if not Block_Check(H) then
+         Bool := False;
+         return;
+      end if;
       while I <= H.Parts'Length loop
          if not Fits_In(H.Parts(I), H.Figure) then
             Next_Pos(H.Parts(I), H.Figure, B);
+            Put("Gick in i not Fits_In");
             if not B and I /= 1 then
                I := I - 2;
             else
@@ -49,16 +56,23 @@ package body Handler is
             end if;
          else
             for J in 1..I-1 loop
+               Put("For-loopen"); New_Line;
                if Collides(H.Parts(J), H.Parts(I)) then
                   Next_Pos(H.Parts(I), H.Figure, B);
+                  Put("Collides, exit"); New_Line;
                   exit;
                end if;
             end loop;
-           if not B and I /= 1 then
-               I := I - 1;
+            if B then
+               Put("True"); New_Line;
             else
-               exit;
+               Put("False"); New_Line;
             end if;
+            if not B and I /= 1 then
+               I := I - 2;
+               --hade nyss exit i en else-sats
+            end if;
+            Put("Gick past if not B"); New_Line;
          end if;
          if not B then
             exit;
