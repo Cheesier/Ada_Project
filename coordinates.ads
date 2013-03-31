@@ -17,8 +17,8 @@ package Coordinates is
    
    type AABB is
       record
-         Min: Vec3;
-         Max: Vec3;
+         Min: Vec3 := Vec3'(1, 1, 1);
+         Max: Vec3 := Vec3'(1, 1, 1);
       end record;
 
    function "+"(Left, Right: in Vec3) return Vec3;

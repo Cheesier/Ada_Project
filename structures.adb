@@ -81,26 +81,31 @@ package body Structures is
       return Count;
    end Get_Nr_Of_Blocks;
 
-   procedure Add(S : in out Structure_Access; X, Y, Z : in Integer) is
+   procedure Add(S: in out Structure_Access; X, Y, Z: in Integer) is
    begin
       S.Data(X, Y, Z) := True;
    end Add;
 
-   function Is_Occupied(S : in Structure_Access; X, Y, Z : in Integer) return Boolean is
+   function Is_Occupied(S: in Structure_Access; X, Y, Z: in Integer) return Boolean is
    begin
+      put(Vec3'(X, Y, Z));
       return S.Data(X, Y, Z);
+   end Is_Occupied;
+
+   function Is_Occupied(S: in Structure_Access; X, Y, Z: in Integer; D: in Vec3) return Boolean is
+   begin
+      return Is_Occupied(S, X-D.X, Y-D.Y, Z-D.Z);
    end Is_Occupied;
 
    function Collides(A, B: in Structure_Access; Overlap: in AABB; Da, Db: in Vec3) return Boolean is
    begin
-      --Put(Da); Put(Db); New_Line;
-      for X in Overlap.Min.X+1..Overlap.Max.X loop
-         for Y in Overlap.Min.Y+1..Overlap.Max.Y loop
-            for Z in Overlap.Min.Z+1..Overlap.Max.Z loop
-               --Put("Run ");Put(Vec3'(X, Y, Z)-Da); Put(Vec3'(X, Y, Z)-Db); New_Line; -- DEBUG
-               if Is_Occupied(A, X-Da.X+1, Y-Da.Y+1, Z-Da.Z+1) and Is_Occupied(B, X-Db.X+1, Y-Db.X+1, Z-Db.X+1) then
+      for X in Overlap.Min.X..Overlap.Max.X loop
+         for Y in Overlap.Min.Y..Overlap.Max.Y loop
+            for Z in Overlap.Min.Z..Overlap.Max.Z loop
+               if Is_Occupied(A, X, Y, Z, Da) and Is_Occupied(B, X, Y, Z, Db) then
                   return True;
                end if;
+               New_Line;
             end loop;
          end loop;
       end loop;
@@ -109,10 +114,10 @@ package body Structures is
 
    function Fits_Inside(A, B: in Structure_Access; Overlap: in AABB; D: in Vec3) return Boolean is
    begin
-      for X in Overlap.Min.X+1..Overlap.Max.X loop
-         for Y in Overlap.Min.Y+1..Overlap.Max.Y loop
-            for Z in Overlap.Min.Z+1..Overlap.Max.Z loop
-               if Is_Occupied(A, X-D.X+1, Y-D.Y+1, Z-D.Z+1) and not Is_Occupied(B, X+1, Y+1, Z+1) then
+      for X in Overlap.Min.X..Overlap.Max.X loop
+         for Y in Overlap.Min.Y..Overlap.Max.Y loop
+            for Z in Overlap.Min.Z..Overlap.Max.Z loop
+               if Is_Occupied(A, X, Y, Z, D) and not Is_Occupied(B, X, Y, Z) then
                   return False;
                end if;
             end loop;

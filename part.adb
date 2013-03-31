@@ -118,21 +118,22 @@ package body Part is
       P.Origin_Displacement.Y := P.Origin_Displacement.Y + Y;
       P.Origin_Displacement.Z := P.Origin_Displacement.Z + Z;
 
-      P.Bounding.Min := P.Origin_Displacement;
+      P.Bounding.Min := P.Origin_Displacement + Vec3'(1, 1, 1);
       P.Bounding.Max := Coordinates.Vec3'(P.X, P.Y, P.Z) + P.Origin_Displacement;
    end Move;
    
    function Collides(A, B: in Part_Access) return Boolean is
    begin
       if Coordinates.Collides(A.Bounding, B.Bounding) then
+         Put("Collision at: ");
+         Put(Coordinates.Find_Overlap(A.Bounding, B.Bounding));
+         New_Line;
          return Structures.Collides(
-                  A.Structure, 
+                  A.Structure,
                   B.Structure,
-                  Coordinates.Find_Overlap(A.Bounding, B.Bounding) - Coordinates.Minimize(
-                        A.Origin_Displacement, 
-                        B.Origin_Displacement),
-                  Coordinates.Positive_1(A.Origin_Displacement - B.Origin_Displacement),
-                  Coordinates.Positive_1(B.Origin_Displacement - A.Origin_Displacement));
+                  Coordinates.Find_Overlap(A.Bounding, B.Bounding),
+                  A.Origin_Displacement,
+                  B.Origin_Displacement);
       else
          return False;
       end if;
@@ -143,7 +144,7 @@ package body Part is
       if Coordinates.Fits_In(A.Bounding, B.Bounding) then
          return Structures.Fits_Inside(
                                  A.Structure,
-                                 B.Structure, 
+                                 B.Structure,
                                  A.Bounding,
                                  A.Origin_Displacement);
       else
@@ -162,7 +163,7 @@ package body Part is
       Parse_Structure(To_Unbounded_String(S(1..Length(Str)-Len)), P.Structure);
       Parse_Structure(To_Unbounded_String(S(1..Length(Str)-Len)), P.Start_Struct);
 
-      P.Bounding.Min := P.Origin_Displacement;
+      P.Bounding.Min := P.Origin_Displacement + Coordinates.Vec3'(1, 1, 1);
       P.Bounding.Max := Coordinates.Vec3'(X, Y, Z) + P.Origin_Displacement;
 
       Return(P);

@@ -32,6 +32,7 @@ package Structures is
 --     function structure_to_string(S : in Structure_Type) return String;
    procedure Add(S: in out Structure_Access; X,Y,Z: in Integer);
    function Is_Occupied(S: in Structure_Access; X,Y,Z: in Integer) return Boolean;
+   function Is_Occupied(S: in Structure_Access; X,Y,Z: in Integer; D: Vec3) return Boolean;
    procedure Parse_Structure(Str: in Unbounded_String; Struct: in out Structure_Access);
    function Structure_To_String(Struct: in Structure_Access) return Unbounded_String;
 private
