@@ -125,9 +125,6 @@ package body Part is
    function Collides(A, B: in Part_Access) return Boolean is
    begin
       if Coordinates.Collides(A.Bounding, B.Bounding) then
-         Put("Collision at: ");
-         Put(Coordinates.Find_Overlap(A.Bounding, B.Bounding));
-         New_Line;
          return Structures.Collides(
                   A.Structure,
                   B.Structure,
@@ -194,6 +191,20 @@ package body Part is
       P.Rotations := (others => 0);
    end Reset_Rotations;
 
+   procedure Rotate(P: in out Part_Access; X, Y, Z: in Integer) is
+   begin
+      Reset_Rotations(P);
+      for i in 1..X loop
+         Rotate_X(P);
+      end loop;
+      for i in 1..Y loop
+         Rotate_Y(P);
+      end loop;
+      for i in 1..Z loop
+         Rotate_Z(P);
+      end loop;
+   end Rotate;
+
    procedure Rotate_Next(P: in out Part_Access; B: out Boolean) is
    begin
       if P.Rotations(3) < 3 then
@@ -216,21 +227,7 @@ package body Part is
       B := True;
    end Rotate_Next;
 
-   procedure Rotate(P: in out Part_Access; X, Y, Z: in Integer) is
-   begin
-      Reset_Rotations(P);
-      for i in 1..X loop
-         Rotate_X(P);
-      end loop;
-      for i in 1..Y loop
-         Rotate_Y(P);
-      end loop;
-      for i in 1..Z loop
-         Rotate_Z(P);
-      end loop;
-   end Rotate;
-
-   procedure Next_Pos(Fig: in Part_Access; Part: in out Part_Access; B: out Boolean) is
+   procedure Next_Pos(Part: in out Part_Access; Fig: in Part_Access; B: out Boolean) is
       Part_Dim: Vec3 := Get_Dimensions(Part);
       Fig_Dim: Vec3 := Get_Dimensions(Fig);
    begin
@@ -239,15 +236,15 @@ package body Part is
       if Part.Origin_Displacement.X + Part_Dim.X < Fig_Dim.X then
          Move(Part, 1, 0, 0);
       else
-         Part.Origin_Displacement.X := 0;
+         Move(Part, -Part.Origin_Displacement.X, 0, 0);
          if Part.Origin_Displacement.Y + Part_Dim.Y < Fig_Dim.Y then
             Move(Part, 0, 1, 0);
          else
-            Part.Origin_Displacement.Y := 0;
+            Move(Part, 0, -Part.Origin_Displacement.Y, 0);
             if Part.Origin_Displacement.Z + Part_Dim.Z < Fig_Dim.Z then
                Move(Part, 0, 0, 1);
             else
-               Part.Origin_Displacement.Z := 0;
+               Move(Part, 0, 0, -Part.Origin_Displacement.Z);
                Rotate_Next(Part, B);
                if not B then
                   return;

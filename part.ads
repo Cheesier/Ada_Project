@@ -32,7 +32,7 @@ package Part is
    function Part_To_String(P: in Part_Access) return Unbounded_String;
    function Parse_Part(Str: in Unbounded_String) return Part_Access;
    function Get_Nr_Of_Blocks(P: in Part_Access) return Integer;
-   procedure Next_Pos(Fig: in Part_Access; Part: in out Part_Access; B: out Boolean);
+   procedure Next_Pos(Part: in out Part_Access; Fig: in Part_Access; B: out Boolean);
    --function movement_to_string(P: in Part) return String;
 
    procedure Rotate_X(P : in out Part_Access);

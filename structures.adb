@@ -88,7 +88,8 @@ package body Structures is
 
    function Is_Occupied(S: in Structure_Access; X, Y, Z: in Integer) return Boolean is
    begin
-      put(Vec3'(X, Y, Z));
+      Put(Vec3'(X, Y, Z));
+      Put(Get_Dimensions(S)); New_Line;
       return S.Data(X, Y, Z);
    end Is_Occupied;
 
@@ -99,6 +100,7 @@ package body Structures is
 
    function Collides(A, B: in Structure_Access; Overlap: in AABB; Da, Db: in Vec3) return Boolean is
    begin
+      New_Line;Put_Line("Collides");
       for X in Overlap.Min.X..Overlap.Max.X loop
          for Y in Overlap.Min.Y..Overlap.Max.Y loop
             for Z in Overlap.Min.Z..Overlap.Max.Z loop
@@ -114,6 +116,7 @@ package body Structures is
 
    function Fits_Inside(A, B: in Structure_Access; Overlap: in AABB; D: in Vec3) return Boolean is
    begin
+      New_Line;Put_Line("Fits_In");
       for X in Overlap.Min.X..Overlap.Max.X loop
          for Y in Overlap.Min.Y..Overlap.Max.Y loop
             for Z in Overlap.Min.Z..Overlap.Max.Z loop
