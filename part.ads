@@ -21,6 +21,7 @@ package Part is
       access all Part_Type;
    procedure Move(P: in out Part_Access; X, Y, Z: in Integer);
 
+   procedure Put_Visual(P: in Part_Access);
    function Get_Result(P: in Part_Access) return Unbounded_String;
    procedure Rotate_Next(P: in out Part_Access; B: out Boolean);
    procedure Rotate(P: in out Part_Access; X, Y, Z: in Integer);

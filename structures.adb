@@ -12,12 +12,28 @@ with Coordinates;
 
 package body Structures is
 
+   procedure Put_Visual(S: in Structure_Access) is
+   begin
+      for Z in 1..S.Z loop
+         for Y in reverse 1..S.Y loop
+            for X in 1..S.X loop
+               if Is_Occupied(S, X, Y, Z) then
+                  Put('1');
+               else
+                  Put('0');
+               end if;
+            end loop;
+            New_Line;
+         end loop;
+         New_Line;
+      end loop;
+   end Put_Visual;
 
    procedure Rotate_X(S : in out Structure_Access) is
       Temp : Structure_Access := new Structure_Type(S.X, S.Z, S.Y);
    begin
       for X in 1..S.X loop
-         for Y in reverse 1..S.Y loop
+         for Y in 1..S.Y loop --reverse?
             for Z in 1..S.Z loop
                if Is_Occupied(S, X, Y, Z) then
                   add(Temp, X, Z, S.Y-Y+1);
@@ -34,7 +50,7 @@ package body Structures is
    begin
       for X in 1..S.X loop
          for Y in 1..S.Y loop
-            for Z in reverse 1..S.Z loop
+            for Z in 1..S.Z loop --Reverse?
                if Is_Occupied(S, X, Y, Z) then
                   add(Temp, S.Z-Z+1, Y, X);
                end if;
@@ -48,7 +64,7 @@ package body Structures is
    procedure Rotate_Z(S: in out Structure_Access) is
       Temp : Structure_Access := new Structure_Type(S.Y, S.X, S.Z);  
    begin
-      for X in reverse 1..S.X loop
+      for X in 1..S.X loop --reverse?
          for Y in 1..S.Y loop
             for Z in 1..S.Z loop
                if Is_Occupied(S, X, Y, Z) then
@@ -135,10 +151,10 @@ package body Structures is
       Z : Integer := Struct.Z;
    begin
       for I in 1..Z loop
-         for J in reverse 1..Y loop
+         for J in 1..Y loop
             for K in 1..X loop
                if S(k + (j-1)*X) = '1' then
-                  Add(Struct, K, J, I);
+                  Add(Struct, K, Y-J+1, I);
                end if;
             end loop;
          end loop;

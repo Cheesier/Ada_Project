@@ -15,12 +15,13 @@ package Handler is
    type Part_Arr is 
       array(Integer range <>) of Part_Access;
    type Handler_Type(P: Part_Access; Nr_Of_Parts: Positive; Fig_Id: Integer) is private;
-
-   function Get_Result(H: in Handler_Type) return Unbounded_String;
-   procedure Solver(H: in out Handler_Type; Bool: out Boolean);
-   function Block_Check(H: in Handler_Type) return Boolean;
-   procedure Put(H: in Handler_Type);
-   procedure Split_Part_String(H: in out Handler_Type; U: in Unbounded_String);
+   type Handler_Access is access Handler_Type;
+   
+   function Get_Result(H: in Handler_Access) return Unbounded_String;
+   procedure Solver(H: in out Handler_Access; Bool: out Boolean);
+   function Block_Check(H: in Handler_Access) return Boolean;
+   procedure Put(H: in Handler_Access);
+   procedure Split_Part_String(H: in out Handler_Access; U: in Unbounded_String);
    function Parse_Figure(U: in Unbounded_String) return Part_Access;
 
 --When comparing the figure to the Parts you have to take into

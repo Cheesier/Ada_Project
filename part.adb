@@ -14,6 +14,11 @@ with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 
 package body Part is
 
+   procedure Put_Visual(P: in Part_Access) is
+   begin
+      Put_Visual(P.Structure);
+   end Put_Visual;
+   
    procedure Put(P: in Part_Access) is
    begin
       Put(Part_To_String(P));
@@ -30,7 +35,11 @@ package body Part is
    begin
       Append(U, " !");
       for I in 1..3 loop
-         Append(U, Integer'Image(P.Rotations(I)));
+      --    if I = 2 then
+      --       Append(U, Integer'Image(3-P.Rotations(I)));
+      --    else
+            Append(U, Integer'Image(P.Rotations(I)));
+      --    end if;
       end loop;
       Append(U, Integer'Image(P.Origin_Displacement.X));
       Append(U, Integer'Image(P.Origin_Displacement.Y));
@@ -40,7 +49,9 @@ package body Part is
 
    procedure Rotate_X(P: in out Part_Access) is
    begin
-      Rotate_X(P.Structure);
+      -- for I in 1..3 loop 
+         Rotate_X(P.Structure);
+      --end loop;
       if P.Rotations(1) /= 3 then
          P.Rotations(1) := P.Rotations(1) + 1;
       else
@@ -51,7 +62,9 @@ package body Part is
 
    procedure Rotate_Y(P: in out Part_Access) is
    begin
-      Rotate_Y(P.Structure);
+      -- for I in 1..3 loop 
+         Rotate_Y(P.Structure);
+      -- end loop;
       if P.Rotations(2) /= 3 then
          P.Rotations(2) := P.Rotations(2) + 1;
       else
@@ -62,7 +75,9 @@ package body Part is
 
    procedure Rotate_Z(P: in out Part_Access) is
    begin
-      Rotate_Z(P.Structure);
+      -- for I in 1..3 loop 
+         Rotate_Z(P.Structure);
+      -- end loop;
       if P.Rotations(3) /= 3 then
          P.Rotations(3) := P.Rotations(3) + 1;
       else
@@ -187,7 +202,7 @@ package body Part is
    end Reset;
 
    procedure Reset_Rotations(P: in out Part_Access) is
-      dim: Vec3 := Get_Dimensions(P);
+      dim: Vec3 := Get_Dimensions(P.Start_Struct);
    begin
       Free_Memory(P.Structure);
       P.Structure := new Structure_Type(dim.X, dim.Y, dim.Z);

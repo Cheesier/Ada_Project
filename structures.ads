@@ -17,6 +17,7 @@ package Structures is
    type Structure_Type(iX, iY, iZ : Positive) is private;
    type Structure_Access is access Structure_Type;
 
+   procedure Put_Visual(S: in Structure_Access);
    procedure Rotate_X(S: in out Structure_Access);
    procedure Rotate_Y(S: in out Structure_Access);
    procedure Rotate_Z(S: in out Structure_Access);
@@ -35,6 +36,7 @@ package Structures is
    function Is_Occupied(S: in Structure_Access; X,Y,Z: in Integer; D: Vec3) return Boolean;
    procedure Parse_Structure(Str: in Unbounded_String; Struct: in out Structure_Access);
    function Structure_To_String(Struct: in Structure_Access) return Unbounded_String;
+   
 private
    type Test_Arr is
      array(Integer range <>, Integer range <>, Integer range <>) of Boolean;
