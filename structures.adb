@@ -19,7 +19,7 @@ package body Structures is
       for X in 1..S.X loop
          for Y in reverse 1..S.Y loop
             for Z in 1..S.Z loop
-               if(Is_Occupied(S, X, Y, Z)) then
+               if Is_Occupied(S, X, Y, Z) then
                   add(Temp, X, Z, S.Y-Y+1);
                end if;
             end loop;
@@ -35,7 +35,7 @@ package body Structures is
       for X in 1..S.X loop
          for Y in 1..S.Y loop
             for Z in reverse 1..S.Z loop
-               if(Is_Occupied(S, X, Y, Z)) then
+               if Is_Occupied(S, X, Y, Z) then
                   add(Temp, S.Z-Z+1, Y, X);
                end if;
             end loop;
@@ -45,18 +45,13 @@ package body Structures is
       S := Temp;
    end Rotate_Y;
 
-   function Get_Dimensions(S: in Structure_Access) return Vec3 is
-   begin
-      return Vec3'(S.X, S.Y, S.Z);
-   end Get_Dimensions;
-
    procedure Rotate_Z(S: in out Structure_Access) is
       Temp : Structure_Access := new Structure_Type(S.Y, S.X, S.Z);  
    begin
       for X in reverse 1..S.X loop
          for Y in 1..S.Y loop
             for Z in 1..S.Z loop
-               if(Is_Occupied(S, X, Y, Z)) then
+               if Is_Occupied(S, X, Y, Z) then
                   add(Temp, Y, S.X-X+1, Z);
                end if;
             end loop;
@@ -65,6 +60,11 @@ package body Structures is
       Free(S);
       S := Temp;
    end Rotate_Z;
+
+   function Get_Dimensions(S: in Structure_Access) return Vec3 is
+   begin
+      return Vec3'(S.X, S.Y, S.Z);
+   end Get_Dimensions;
 
    function Get_Nr_Of_Blocks(S: in Structure_Access) return Integer is
       Count: Integer := 0;
@@ -88,26 +88,25 @@ package body Structures is
 
    function Is_Occupied(S: in Structure_Access; X, Y, Z: in Integer) return Boolean is
    begin
-      Put(Vec3'(X, Y, Z));
-      Put(Get_Dimensions(S)); New_Line;
       return S.Data(X, Y, Z);
    end Is_Occupied;
 
    function Is_Occupied(S: in Structure_Access; X, Y, Z: in Integer; D: in Vec3) return Boolean is
-   begin
+   begin   
+   --Put("X, Y, Z: "); Put(Vec3'(X, Y, Z)); New_Line;
+   --Put("Displacement: "); Put(D); New_Line;
+   --Put("Dimensions: "); Put(Get_Dimensions(S)); New_Line;
       return Is_Occupied(S, X-D.X, Y-D.Y, Z-D.Z);
    end Is_Occupied;
 
    function Collides(A, B: in Structure_Access; Overlap: in AABB; Da, Db: in Vec3) return Boolean is
    begin
-      New_Line;Put_Line("Collides");
       for X in Overlap.Min.X..Overlap.Max.X loop
          for Y in Overlap.Min.Y..Overlap.Max.Y loop
             for Z in Overlap.Min.Z..Overlap.Max.Z loop
                if Is_Occupied(A, X, Y, Z, Da) and Is_Occupied(B, X, Y, Z, Db) then
                   return True;
                end if;
-               New_Line;
             end loop;
          end loop;
       end loop;
@@ -116,7 +115,7 @@ package body Structures is
 
    function Fits_Inside(A, B: in Structure_Access; Overlap: in AABB; D: in Vec3) return Boolean is
    begin
-      New_Line;Put_Line("Fits_In");
+   --Gets either a too big Max.X or a too small D.X
       for X in Overlap.Min.X..Overlap.Max.X loop
          for Y in Overlap.Min.Y..Overlap.Max.Y loop
             for Z in Overlap.Min.Z..Overlap.Max.Z loop
@@ -136,7 +135,7 @@ package body Structures is
       Z : Integer := Struct.Z;
    begin
       for I in 1..Z loop
-         for J in 1..Y loop
+         for J in reverse 1..Y loop
             for K in 1..X loop
                if S(k + (j-1)*X) = '1' then
                   Add(Struct, K, J, I);

@@ -31,16 +31,24 @@ procedure main is
    Count: Integer := 0;
    Dim: Vec3 := Get_Dimensions(Test2);
 begin
+   ----------
+
+   --Parsar vi åt fel håll eller inte?!
+
+   ----------
+   --Put(Test3); New_Line;
    --Test := new Part.Parse_Part(To_Unbounded_String("2x2x2 11001100"));
    if Network.Init("localhost", 2400, To_Unbounded_String("Ost")) then
       Put_Line("Connection Established");
       --Put_Line(Network.Get_Parts);
       Split_Part_String(Handle, Network.Get_Parts);
       Solver(Handle, B);
+      Put(Handle);
       Put(To_String(Get_Result(Handle)));
-      New_Line;
+      --New_Line;
       if B then
-         Network.Solution(Get_Result(Handle));
+         --Network.Solution(Get_Result(Handle));
+         Network.Solution(To_Unbounded_String("1 ! 0 0 0 0 0 0 ! 0 0 0 0 0 1 ! 0 0 0 0 0 2 ! 0 0 1 0 0 1 ! 0 0 0 0 0 0 ! 0 0 0 0 0 0 ! 0 0 0 0 0 0"));
       else
          Network.Give_Up(Id);
       end if;

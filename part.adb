@@ -18,13 +18,10 @@ package body Part is
    begin
       Put(Part_To_String(P));
       New_Line;
-      Coordinates.Put(P.Origin_Displacement);
+      Put("Bounding_Box: "); Coordinates.Put(P.Bounding);
       New_Line;
-      Put(P.Rotations(1), 0);
-      New_Line;
-      Put(P.Rotations(2), 0);
-      New_Line;
-      Put(P.Rotations(3), 0);
+      Put("Rotations: "); Put(P.Rotations(1), 0); Put(" ");
+      Put(P.Rotations(2), 0); Put(" "); Put(P.Rotations(3), 0);
       New_Line;
    end Put;
    
@@ -119,7 +116,7 @@ package body Part is
       P.Origin_Displacement.Z := P.Origin_Displacement.Z + Z;
 
       P.Bounding.Min := P.Origin_Displacement + Vec3'(1, 1, 1);
-      P.Bounding.Max := Coordinates.Vec3'(P.X, P.Y, P.Z) + P.Origin_Displacement;
+      P.Bounding.Max := Get_Dimensions(P) + P.Origin_Displacement;
    end Move;
    
    function Collides(A, B: in Part_Access) return Boolean is
@@ -182,6 +179,13 @@ package body Part is
       return Structure_To_String(P.Structure);
    end Part_To_String;
 
+   procedure Reset(P: in out Part_Access) is
+   begin
+      Reset_Rotations(P);
+      P.Origin_Displacement := Vec3'(0, 0, 0);
+      P.Bounding := AABB'(Vec3'(1, 1, 1), Get_Dimensions(P));
+   end Reset;
+
    procedure Reset_Rotations(P: in out Part_Access) is
       dim: Vec3 := Get_Dimensions(P);
    begin
@@ -231,8 +235,6 @@ package body Part is
       Part_Dim: Vec3 := Get_Dimensions(Part);
       Fig_Dim: Vec3 := Get_Dimensions(Fig);
    begin
-      Put("I Next_Pos");
-      New_Line;
       if Part.Origin_Displacement.X + Part_Dim.X < Fig_Dim.X then
          Move(Part, 1, 0, 0);
       else

@@ -21,10 +21,10 @@ package Part is
       access all Part_Type;
    procedure Move(P: in out Part_Access; X, Y, Z: in Integer);
 
-
    function Get_Result(P: in Part_Access) return Unbounded_String;
    procedure Rotate_Next(P: in out Part_Access; B: out Boolean);
    procedure Rotate(P: in out Part_Access; X, Y, Z: in Integer);
+   procedure Reset(P: in out Part_Access);
    procedure Reset_Rotations(P: in out Part_Access);
    procedure Put(P: in Part_Access);
    procedure Get_Dimensions(U: in Unbounded_String; X, Y, Z, Len: out Integer);

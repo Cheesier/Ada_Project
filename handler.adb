@@ -40,44 +40,43 @@ package body Handler is
       Solved: Boolean := False;
       I: Integer := 1;
    begin
-      Put("Length: "); Put(H.Parts'Length); New_Line;
       if not Block_Check(H) then
          Bool := False;
-         Put_Line("The Number of blocks does not match!");
          return;
       end if;
       while I <= H.Parts'Length loop
+         --if I = 4 then
+         --   Put(H.Parts(I));
+         --end if;
+         Put("I: "); Put(I, 0); New_Line;
+         Put(H); New_Line;
          if not Fits_In(H.Parts(I), H.Figure) then
-            Put("I: "); Put(I, 0);
+            Put("not Fits_In"); New_Line;
             Next_Pos(H.Parts(I), H.Figure, B);
             I := I - 1;
-            Put("Gick in i not Fits_In");
             if not B and I /= 1 then
                I := I - 2;
+               Reset(H.Parts(I));
             elsif not B then
                exit;
             end if;
          else
+            Put("Collision-checking"); New_Line;
             for J in 1..I-1 loop
-               Put("For-loopen"); New_Line;
+--               Put("J: "); Put(J); New_Line;
                if Collides(H.Parts(J), H.Parts(I)) then
+--                  Put("Collides"); New_Line;
                   Next_Pos(H.Parts(I), H.Figure, B);
                   I := I - 1;
-                  Put("Collides, exit"); New_Line;
                   exit;
                end if;
             end loop;
-            if B then
-               Put("True"); New_Line;
-            else
-               Put("False"); New_Line;
-            end if;
             if not B and I /= 1 then
+               Reset(H.Parts(I));
                I := I - 2;
             elsif not B then
                exit;
             end if;
-            Put("Gick past if not B"); New_Line;
          end if;
          I := I + 1;
       end loop;
