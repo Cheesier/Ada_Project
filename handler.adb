@@ -40,37 +40,40 @@ package body Handler is
       Solved: Boolean := False;
       I: Integer := 1;
       K: Integer;
+      Count : Integer:=1;
+      checker : Boolean := False;
    begin
-      if not Block_Check(H) then
-         Bool := False;
-         return;
-      end if;
+     -- if not Block_Check(H) then
+       --  Bool := False;
+        -- return;
+      --end if;
       while I <= H.Parts'Length loop
          K := I;
+         Put(Count);
+         Count := Count+1;
+         --Put(H);
          --if I = 4 then
          --   Put(H.Parts(I));
          --end if;
          --Put(H); New_Line;
          if not Fits_In(H.Parts(I), H.Figure) then
-            Put("not Fits_In"); New_Line;
             Next_Pos(H.Parts(I), H.Figure, B);
-            I := I - 1;
             if not B and I /= 1 then
                Reset(H.Parts(I));
                Next_Pos(H.Parts(I-1), H.Figure, B);
-               I := I - 2;
+               I := I - 1;
                --Put("I: "); Put(I, 0); New_Line;
             elsif not B then
                exit;
             end if;
+            I := I - 1;
          else
-            Put("Collision-checking"); New_Line;
             for J in 1..I-1 loop
 --               Put("J: "); Put(J); New_Line;
                if Collides(H.Parts(J), H.Parts(I)) then
 --                  Put("Collides"); New_Line;
                   Next_Pos(H.Parts(I), H.Figure, B);
-                  I := I - 1;
+                  checker := True;
                   exit;
                end if;
             end loop;
@@ -82,12 +85,14 @@ package body Handler is
             elsif not B then
                exit;
             end if;
-         end if;
-         if i+1 /= k then
-            Put("I: "); Put(I+1, 0); New_Line;
+            if checker then
+	      I := I - 1;
+	      checker := False;
+	    end if;
          end if;
          I := I + 1;
       end loop;
+      New_Line;
       Bool := B;
    end Solver;
 

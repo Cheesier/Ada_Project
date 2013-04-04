@@ -33,10 +33,10 @@ package body Structures is
       Temp : Structure_Access := new Structure_Type(S.X, S.Z, S.Y);
    begin
       for X in 1..S.X loop
-         for Y in 1..S.Y loop --reverse?
-            for Z in 1..S.Z loop
+         for Y in reverse 1..S.Y loop --reverse?
+            for Z in reverse 1..S.Z loop
                if Is_Occupied(S, X, Y, Z) then
-                  add(Temp, X, Z, S.Y-Y+1);
+                  add(Temp, X, S.Z-z+1, Y);
                end if;
             end loop;
          end loop;
@@ -48,11 +48,11 @@ package body Structures is
    procedure Rotate_Y(S: in out Structure_Access) is
       Temp : Structure_Access := new Structure_Type(S.Z, S.Y, S.X);
    begin
-      for X in 1..S.X loop
-         for Y in 1..S.Y loop
+      for X in reverse 1..S.X loop
+         for Y in reverse 1..S.Y loop
             for Z in 1..S.Z loop --Reverse?
                if Is_Occupied(S, X, Y, Z) then
-                  add(Temp, S.Z-Z+1, Y, X);
+                  add(Temp, Z, Y, S.X-x+1);
                end if;
             end loop;
          end loop;
@@ -68,7 +68,7 @@ package body Structures is
          for Y in 1..S.Y loop
             for Z in 1..S.Z loop
                if Is_Occupied(S, X, Y, Z) then
-                  add(Temp, Y, S.X-X+1, Z);
+                  add(Temp, S.Y-y+1, X, Z);
                end if;
             end loop;
          end loop;
@@ -153,7 +153,7 @@ package body Structures is
       for I in 1..Z loop
          for J in 1..Y loop
             for K in 1..X loop
-               if S(k + (j-1)*X) = '1' then
+               if S((k + (j-1)*X)) = '1' then
                   Add(Struct, K, Y-J+1, I);
                end if;
             end loop;
@@ -178,7 +178,7 @@ package body Structures is
       for I in 1..Z loop
          for J in 1..Y loop
             for K in 1..X loop
-               if Is_Occupied(Struct, k, j, i) then
+               if Is_Occupied(Struct, k, Y-j+1, i) then
                   Append(S, '1');
                else
                   Append(S, '0');

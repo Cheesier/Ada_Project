@@ -59,8 +59,9 @@ begin
       Split_Part_String(LitenHandle, Network.get_Parts);
       Solver(LitenHandle, B);
       Put(LitenHandle); New_Line;
+      
       if B then
-         Network.Solution(Get_Result(Handle));
+         Network.Solution(Get_Result(LitenHandle));
          --Network.Solution(To_Unbounded_String("1 ! 0 0 0 0 0 0 ! 0 0 0 0 0 1 ! 0 0 0 0 0 2 ! 0 0 1 0 0 1 ! 0 0 0 0 0 0 ! 0 0 0 0 0 0 ! 0 0 0 0 0 0"));
       else
          Network.Give_Up(Id);

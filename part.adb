@@ -23,17 +23,21 @@ package body Part is
    begin
       Put(Part_To_String(P));
       New_Line;
+      Put("Orgin_displacement: "); Coordinates.Put(P.Origin_Displacement);
+      New_Line;
       Put("Bounding_Box: "); Coordinates.Put(P.Bounding);
       New_Line;
       Put("Rotations: "); Put(P.Rotations(1), 0); Put(" ");
       Put(P.Rotations(2), 0); Put(" "); Put(P.Rotations(3), 0);
       New_Line;
+      Put("---------------------------");
    end Put;
    
    function Get_Result(P: in Part_Access) return Unbounded_String is
       U: Unbounded_String;
    begin
       Append(U, " !");
+      Put(P);
       for I in 1..3 loop
       --    if I = 2 then
       --       Append(U, Integer'Image(3-P.Rotations(I)));
