@@ -23,7 +23,7 @@ package Handler is
    procedure Put(H: in Handler_Access);
    procedure Split_Part_String(H: in out Handler_Access; U: in Unbounded_String);
    function Parse_Figure(U: in Unbounded_String) return Part_Access;
-
+   function Get_Nr_Of_Parts(S: in Unbounded_String) return Integer;
 --When comparing the figure to the Parts you have to take into
 --account the displacement!
 

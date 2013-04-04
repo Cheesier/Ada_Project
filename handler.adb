@@ -31,8 +31,11 @@ package body Handler is
    end Get_Result;
 
    function Parse_Figure(U: in Unbounded_String) return Part_Access is
+   Str : Unbounded_String;
+   C: Integer := Integer'Image(Get_Nr_Of_Parts(U))'Length+1;
    begin
-      return Parse_Part(U);
+      Str := To_Unbounded_String(Slice(U, C, Length(U)));
+      return Parse_Part(Str);
    end Parse_Figure;
 
    procedure Solver(H: in out Handler_Access; Bool: out Boolean) is
@@ -49,8 +52,8 @@ package body Handler is
       --end if;
       while I <= H.Parts'Length loop
          K := I;
-         Put(Count);
-         Count := Count+1;
+        -- Put(Count);
+         --Count := Count+1;
          --Put(H);
          --if I = 4 then
          --   Put(H.Parts(I));
@@ -105,27 +108,37 @@ package body Handler is
       return Count = Get_Nr_Of_Blocks(H.Figure);
    end Block_Check;
 
-   procedure Split_Part_String(H: in out Handler_Access; U: in Unbounded_String) is
-      IntString: String := "   ";
-      S: String := To_String(U);
+   
+   function Get_Nr_Of_Parts(S: in Unbounded_String) return Integer is
+      Nr_Of_Fig :Unbounded_String;
       I: Integer := 2;
       E: Integer := 1;
-      Start: Integer := 0;
-      X, Y, Z, Count: Integer;
-      C: Character := Element(U, 1);
+      C: Character := Element(S, 1);
+      Count: Integer;
    begin
       while C /= ' ' loop
-         IntString(E) := C;
-         C := S(I);
+         Append(Nr_Of_Fig, C);
+         C := Element(S, I);
          I := I + 1;
          E:= E + 1;
       end loop;
-      Count := Integer'Value(IntString(1..E-1));
-      IntString := "   ";
-      Start := E;
-      E := 1;
-      
-      for K in 1..Count loop
+      Count := Integer'Value(To_String(Nr_Of_Fig));
+      return Count;
+   end Get_Nr_Of_Parts;
+   
+   procedure Split_Part_String(H: in out Handler_Access; U: in Unbounded_String) is
+      K: Integer := Integer'Image(Get_Nr_Of_Parts(U))'Length+1;
+      IntString: String := "   ";
+      S: String(1..Length(U));
+      I: Integer := 2;
+      E: Integer := 1;
+      Start: Integer := 0;
+      X, Y, Z : Integer;
+      Str : Unbounded_String := To_Unbounded_String(Slice(U, K, Length(U)));
+      C: Character := Element(Str, 1);
+   begin
+      S(1..Slice(U, K, Length(U))'Length) := Slice(U, K, Length(U));
+      for K in 1..Get_Nr_Of_Parts(U) loop
          while C /= 'x' loop
             IntString(E) := C;
             C := S(I);
@@ -157,7 +170,7 @@ package body Handler is
          IntString := "   ";
          E := 1;
             
-         H.Parts(K) := Parse_Part(To_Unbounded_String(Slice(U, Start+1, I+X*Y*Z)));
+         H.Parts(K) := Parse_Part(To_Unbounded_String(Slice(Str, Start+1, I+X*Y*Z)));
          Start := I+X*Y*Z+1;
          I := I + X*Y*Z + 1;
       end loop;

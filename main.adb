@@ -28,12 +28,14 @@ procedure main is
    Test3: Part_Access := Part.Parse_Part(To_Unbounded_String("1x2x2 1101"));
    Test4: Part_Access := Part.Parse_Part(To_Unbounded_String("2x2x1 1111"));
    LitenTest: Part_Access := Part.Parse_Part(To_Unbounded_String("3x2x2 010111010111"));
+   NewTest: Part_Access := Part.Parse_Part(To_Unbounded_String("5x3x4 000000000000000000000000000000000010000100000100001111100000"));
    TestSpec: Part_Access := Part.Parse_Part(To_Unbounded_String("3x2x3 111111110110100100"));
 
    LitenHandle: Handler_Access := new Handler_Type(LitenTest, 2, Id);
+   NewHandle: Handler_Access := new Handler_Type(NewTest, 2,4);
    Handle: Handler_Access := new Handler_Type(Test, 7, Id);
    Handle2: Handler_Type(Test2, 7, 2);
-   B: Boolean := True;
+   Solved: Boolean := True;
    Count: Integer := 0;
    Dim: Vec3 := Get_Dimensions(Test2);
    U: Unbounded_String;
@@ -42,8 +44,8 @@ begin
    --Put(Test3); New_Line;
    --Test := new Part.Parse_Part(To_Unbounded_String("2x2x2 11001100"));
    
-   --Uppkoppling mot servern och körning av solvern.
-   if Network.Init("localhost", 2500, To_Unbounded_String("Ost")) then
+  -- Uppkoppling mot servern och körning av solvern.
+   if Network.Init("localhost", 2600, To_Unbounded_String("Ost")) then
       -- De här tre är för dynamisk upphämtning av strängen.
       -- U := Network.Get_Figure;
       -- Test := Part.Parse_Part(To_Unbounded_String(Slice(U, 3, Length(U))));
@@ -56,24 +58,28 @@ begin
       -- Put(Handle); New_Line;
 
       --För liten test
-      Split_Part_String(LitenHandle, Network.get_Parts);
-      Solver(LitenHandle, B);
-      Put(LitenHandle); New_Line;
-      
-      if B then
-         Network.Solution(Get_Result(LitenHandle));
-         --Network.Solution(To_Unbounded_String("1 ! 0 0 0 0 0 0 ! 0 0 0 0 0 1 ! 0 0 0 0 0 2 ! 0 0 1 0 0 1 ! 0 0 0 0 0 0 ! 0 0 0 0 0 0 ! 0 0 0 0 0 0"));
+--       Put(Parse_Figure(Network.Get_Figure));
+--       New_Line;
+--       Put(Get_Nr_Of_Parts(Network.Get_Parts),0);
+--       New_Line;
+--       Put(Id,0);
+--       New_Line;
+    loop
+      Handle := new Handler_Type(Parse_Figure(Network.Get_Figure), 
+                                 Get_Nr_Of_Parts(Network.Get_Parts),
+                                 Id);
+      Split_Part_String(Handle, Network.get_Parts);
+      Solver(Handle, Solved);
+      if Solved then
+         Network.Solution(Get_Result(Handle));
+         Solved := False;
       else
          Network.Give_Up(Id);
       end if;
-      B := Network.Get_Answer;
-      loop
-         B := True;
-         Id := Id + 1;
-         Network.Give_Up(Id);
-         exit when not Network.Get_Answer;
-      end loop;
-      Network.Get_Result;
+      Id := Id+1;
+     exit when not Network.Get_Answer;
+   end loop;
+   Network.Get_Result;
 else
    Put_Line("Failed to establish connection to server");
 end if;
@@ -99,6 +105,7 @@ end if;
    --Put(Handle);
 --   Put(Test2);
 --   New_Line;
+
 
    -- Put_Visual(TestSpec);
    -- Put_Line("---");

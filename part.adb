@@ -180,7 +180,7 @@ package body Part is
       P.Bounding.Max := Coordinates.Vec3'(X, Y, Z) + P.Origin_Displacement;
 
       Return(P);
-   end Parse_Part;
+   end Parse_Part;    
 
    function Get_Dimensions(P: in Part_Access) return Vec3 is
    begin
