@@ -18,7 +18,8 @@ package Handler is
    type Handler_Access is access Handler_Type;
    
    function Get_Result(H: in Handler_Access) return Unbounded_String;
-   procedure Solver(H: in out Handler_Access; Bool: out Boolean);
+   --procedure Solver(H: in out Handler_Access; Bool: out Boolean);
+   procedure Solver(H: in out Handler_Access; Solved: out Boolean);
    function Block_Check(H: in Handler_Access) return Boolean;
    procedure Put(H: in Handler_Access);
    procedure Split_Part_String(H: in out Handler_Access; U: in Unbounded_String);

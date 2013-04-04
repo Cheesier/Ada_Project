@@ -38,7 +38,54 @@ package body Handler is
       return Parse_Part(Str);
    end Parse_Figure;
 
-   procedure Solver(H: in out Handler_Access; Bool: out Boolean) is
+   procedure Solver(H: in out Handler_Access; Solved: out Boolean) is
+
+      procedure Solver_Do(I: in Integer) is
+         Colliding: Boolean := False;
+         Has_Next_Pos: Boolean := True;
+      begin
+         if I > H.Parts'Length then -- Checks if it is solved
+            Solved := True;
+            return;
+         end if;
+         loop
+            if not Fits_In(H.Parts(I), H.Figure) then
+               colliding := True;
+               Next_Pos(H.Parts(I), H.Figure, Has_Next_Pos);
+            else
+               for J in 1..I-1 loop
+                  if Collides(H.Parts(J), H.Parts(I)) then
+                     Colliding := True;
+                     Next_Pos(H.Parts(I), H.Figure, Has_Next_Pos);
+                     exit;
+                  end if;
+               end loop;
+            end if;
+
+            if not Colliding then
+               Solver_Do(I + 1);
+               if not solved then
+                  next_pos(H.Parts(I), H.Figure, Has_Next_Pos);
+               else 
+                  return;
+               end if;
+            elsif not Has_Next_Pos then
+               reset(H.parts(I));
+               return;
+            end if;
+            Colliding := False;
+         end loop;
+      end Solver_Do;
+
+   begin
+      Solved := False;
+      if not Block_Check(H) then
+         return;
+      end if;
+      Solver_Do(1); -- Start at first part, and then dig in
+   end Solver;
+
+   procedure Solver_Old(H: in out Handler_Access; Bool: out Boolean) is
       B: Boolean := True;
       Solved: Boolean := False;
       I: Integer := 1;
@@ -97,7 +144,7 @@ package body Handler is
       end loop;
       New_Line;
       Bool := B;
-   end Solver;
+   end Solver_Old;
 
    function Block_Check(H: in Handler_Access) return Boolean is
       Count: Integer := 0;
