@@ -36,6 +36,7 @@ package Structures is
    function Is_Occupied(S: in Structure_Access; X,Y,Z: in Integer; D: Vec3) return Boolean;
    procedure Parse_Structure(Str: in Unbounded_String; Struct: in out Structure_Access);
    function Structure_To_String(Struct: in Structure_Access) return Unbounded_String;
+   procedure Copy(A, B: in out Structure_Access);
    
 private
    type Test_Arr is

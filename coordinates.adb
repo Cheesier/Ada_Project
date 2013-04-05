@@ -54,6 +54,11 @@ package body Coordinates is
       return Vec3'(Left.X + Right.X, Left.Y + Right.Y, Left.Z + Right.Z);
    end "+";
 
+   function "+"(Left: in Vec3; Right: in Integer) return Vec3 is
+   begin
+      return Vec3'(Left.X + Right, Left.Y + Right, Left.Z + Right);
+   end "+";
+
    function "-"(Left, Right: in Vec3) return Vec3 is
    begin
       return Vec3'(Left.X - Right.X, Left.Y - Right.Y, Left.Z - Right.Z);
@@ -86,18 +91,38 @@ package body Coordinates is
    
    function Collides(A, B: in AABB) return Boolean is
    begin
-      return
-        (A.Min.X <= B.Max.X and A.Max.X >= B.Min.X) and 
-        (A.Min.Y <= B.Max.Y and A.Max.Y >= B.Min.Y) and 
-        (A.Min.Z <= B.Max.Z and A.Max.Z >= B.Min.Z);
+      if A.Min.X <= B.Max.X then
+         if A.Max.X >= B.Min.X then 
+            if A.Min.Y <= B.Max.Y then
+               if A.Max.Y >= B.Min.Y then
+                  if A.Min.Z <= B.Max.Z then 
+                     if A.Max.Z >= B.Min.Z then
+                        return True;
+                     end if;
+                  end if;
+               end if;
+            end if;
+         end if;
+      end if;
+      return False;
    end Collides;
 
    function Fits_In(A, B: in AABB) return Boolean is
    begin
-      return 
-        (A.Min.X >= B.Min.X and A.Max.X <= B.Max.X) and 
-        (A.Min.Y >= B.Min.Y and A.Max.Y <= B.Max.Y) and 
-        (A.Min.Z >= B.Min.Z and A.Max.Z <= B.Max.Z);
+      if A.Min.X >= B.Min.X then
+         if A.Max.X <= B.Max.X then 
+            if A.Min.Y >= B.Min.Y then
+               if A.Max.Y <= B.Max.Y then
+                  if A.Min.Z >= B.Min.Z then 
+                     if A.Max.Z <= B.Max.Z then
+                        return True;
+                     end if;
+                  end if;
+               end if;
+            end if;
+         end if;
+      end if;
+      return False;
    end Fits_In;
    
    function Find_Overlap(A, B: in AABB) return AABB is

@@ -33,7 +33,7 @@ package body Structures is
       Temp : Structure_Access := new Structure_Type(S.X, S.Z, S.Y);
    begin
       for X in 1..S.X loop
-         for Y in reverse 1..S.Y loop --reverse?
+         for Y in reverse 1..S.Y loop
             for Z in reverse 1..S.Z loop
                if Is_Occupied(S, X, Y, Z) then
                   add(Temp, X, S.Z-z+1, Y);
@@ -50,7 +50,7 @@ package body Structures is
    begin
       for X in reverse 1..S.X loop
          for Y in reverse 1..S.Y loop
-            for Z in 1..S.Z loop --Reverse?
+            for Z in 1..S.Z loop
                if Is_Occupied(S, X, Y, Z) then
                   add(Temp, Z, Y, S.X-x+1);
                end if;
@@ -64,7 +64,7 @@ package body Structures is
    procedure Rotate_Z(S: in out Structure_Access) is
       Temp : Structure_Access := new Structure_Type(S.Y, S.X, S.Z);  
    begin
-      for X in 1..S.X loop --reverse?
+      for X in 1..S.X loop
          for Y in 1..S.Y loop
             for Z in 1..S.Z loop
                if Is_Occupied(S, X, Y, Z) then
@@ -104,14 +104,17 @@ package body Structures is
 
    function Is_Occupied(S: in Structure_Access; X, Y, Z: in Integer) return Boolean is
    begin
+      --Put_Visual(S);
+      --Put(Get_Dimensions(S));
+      --Put(Vec3'(X, Y, Z)); New_Line;
       return S.Data(X, Y, Z);
    end Is_Occupied;
 
    function Is_Occupied(S: in Structure_Access; X, Y, Z: in Integer; D: in Vec3) return Boolean is
    begin   
-   --Put("X, Y, Z: "); Put(Vec3'(X, Y, Z)); New_Line;
-   --Put("Displacement: "); Put(D); New_Line;
-   --Put("Dimensions: "); Put(Get_Dimensions(S)); New_Line;
+      -- Put("X, Y, Z: "); Put(Vec3'(X, Y, Z)); New_Line;
+      -- Put("Displacement: "); Put(D); New_Line;
+      -- Put("Dimensions: "); Put(Get_Dimensions(S)); New_Line;
       return Is_Occupied(S, X-D.X, Y-D.Y, Z-D.Z);
    end Is_Occupied;
 
@@ -188,6 +191,13 @@ package body Structures is
       end loop;
       return S;
    end;
+
+   procedure Copy(A, B: in out Structure_Access) is
+      D: Vec3 := Get_Dimensions(A);
+   begin
+      B := new Structure_Type(D.X, D.Y, D.Z);
+      B.all := A.All;
+   end Copy;
 
    procedure Free_Memory(S: in out Structure_Access) is
    begin

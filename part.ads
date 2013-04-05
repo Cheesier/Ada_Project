@@ -21,10 +21,10 @@ package Part is
       access all Part_Type;
    procedure Move(P: in out Part_Access; X, Y, Z: in Integer);
 
+   procedure Put_Bounding(P: in Part_Access);
    procedure Put_Visual(P: in Part_Access);
    function Get_Result(P: in Part_Access) return Unbounded_String;
    procedure Rotate_Next(P: in out Part_Access; B: out Boolean);
-   procedure Rotate(P: in out Part_Access; X, Y, Z: in Integer);
    procedure Reset(P: in out Part_Access);
    procedure Reset_Rotations(P: in out Part_Access);
    procedure Put(P: in Part_Access);
@@ -34,7 +34,6 @@ package Part is
    function Parse_Part(Str: in Unbounded_String) return Part_Access;
    function Get_Nr_Of_Blocks(P: in Part_Access) return Integer;
    procedure Next_Pos(Part: in out Part_Access; Fig: in Part_Access; B: out Boolean);
-   --function movement_to_string(P: in Part) return String;
 
    procedure Rotate_X(P : in out Part_Access);
    procedure Rotate_Y(P : in out Part_Access);
@@ -44,7 +43,13 @@ package Part is
    function Fits_In(A, B: in Part_Access) return boolean;
 
 private
+   procedure Rotate(P: in out Part_Access; X, Y, Z: in Integer);
+   procedure Rotate_X_Internal(P : in out Part_Access);
+   procedure Rotate_Y_Internal(P : in out Part_Access);
+   procedure Rotate_Z_Internal(P : in out Part_Access);
+
    type Rot_Arr is array(1..3) of Integer;
+   type Cache_Arr is array(0..3, 0..3, 0..3) of Structure_Access;
 
    type Part_Type(X, Y, Z: Integer) is
       record
@@ -53,6 +58,7 @@ private
          Structure: Structure_Access := new Structure_Type(X, Y, Z);
          Start_Struct: Structure_Access := new Structure_Type(X, Y, Z);
          Rotations: Rot_Arr := (others => 0);
+         Rotation_Cache: Cache_Arr;
       end record;
 
 end Part;

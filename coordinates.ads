@@ -22,6 +22,7 @@ package Coordinates is
       end record;
 
    function "+"(Left, Right: in Vec3) return Vec3;
+   function "+"(Left: in Vec3; Right: in Integer) return Vec3;
    function "-"(Left, Right: in Vec3) return Vec3;
    function "-"(Left: in AABB; Right: in Vec3) return AABB;
 

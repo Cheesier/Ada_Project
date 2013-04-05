@@ -14,6 +14,11 @@ with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 
 package body Part is
 
+   procedure Put_Bounding(P: in Part_Access) is
+   begin
+      Put(P.Bounding);
+   end Put_Bounding;
+
    procedure Put_Visual(P: in Part_Access) is
    begin
       Put_Visual(P.Structure);
@@ -51,41 +56,71 @@ package body Part is
       return U;
    end Get_Result;
 
-   procedure Rotate_X(P: in out Part_Access) is
+   procedure Rotate_X_Internal(P: in out Part_Access) is
    begin
-      -- for I in 1..3 loop 
-         Rotate_X(P.Structure);
-      --end loop;
+      Rotate_X(P.Structure);
       if P.Rotations(1) /= 3 then
          P.Rotations(1) := P.Rotations(1) + 1;
       else
          P.Rotations(1) := 0;
       end if;
       P.Bounding.Max := P.Origin_Displacement + Get_Dimensions(P.Structure);
-   end Rotate_X;
+   end Rotate_X_Internal;
 
-   procedure Rotate_Y(P: in out Part_Access) is
+   procedure Rotate_Y_Internal(P: in out Part_Access) is
    begin
-      -- for I in 1..3 loop 
-         Rotate_Y(P.Structure);
-      -- end loop;
+      Rotate_Y(P.Structure);
       if P.Rotations(2) /= 3 then
          P.Rotations(2) := P.Rotations(2) + 1;
       else
          P.Rotations(2) := 0;
       end if;
       P.Bounding.Max := P.Origin_Displacement + Get_Dimensions(P.Structure);
-   end Rotate_Y;
+   end Rotate_Y_Internal;
 
-   procedure Rotate_Z(P: in out Part_Access) is
+   procedure Rotate_Z_Internal(P: in out Part_Access) is
    begin
-      -- for I in 1..3 loop 
-         Rotate_Z(P.Structure);
-      -- end loop;
+      Rotate_Z(P.Structure);
       if P.Rotations(3) /= 3 then
          P.Rotations(3) := P.Rotations(3) + 1;
       else
          P.Rotations(3) := 0;
+      end if;
+      P.Bounding.Max := P.Origin_Displacement + Get_Dimensions(P.Structure);
+   end Rotate_Z_Internal;
+
+   procedure Rotate_X(P: in out Part_Access) is
+   begin
+      if P.Rotations(1) = 3 then
+         P.Structure := P.Rotation_Cache(0, P.Rotations(2), P.Rotations(3));
+         P.Rotations(1) := 0;
+      else
+         P.Structure := P.Rotation_Cache(P.Rotations(1)+1, P.Rotations(2), P.Rotations(3));
+         P.Rotations(1) := P.Rotations(1) + 1;
+      end if;
+      P.Bounding.Max := P.Origin_Displacement + Get_Dimensions(P.Structure);
+   end Rotate_X;
+
+   procedure Rotate_Y(P: in out Part_Access) is
+   begin
+      if P.Rotations(2) = 3 then
+         P.Structure := P.Rotation_Cache(P.Rotations(1), 0, P.Rotations(3));
+         P.Rotations(2) := 0;
+      else
+         P.Structure := P.Rotation_Cache(P.Rotations(1), P.Rotations(2)+1, P.Rotations(3));
+         P.Rotations(2) := P.Rotations(2) + 1;
+      end if;
+      P.Bounding.Max := P.Origin_Displacement + Get_Dimensions(P.Structure);
+   end Rotate_Y;
+
+   procedure Rotate_Z(P: in out Part_Access) is
+   begin
+      if P.Rotations(3) = 3 then
+         P.Structure := P.Rotation_Cache(P.Rotations(1), P.Rotations(2), 0);
+         P.Rotations(3) := 0;
+      else
+         P.Structure := P.Rotation_Cache(P.Rotations(1), P.Rotations(2), P.Rotations(3)+1);
+         P.Rotations(3) := P.Rotations(3) + 1;
       end if;
       P.Bounding.Max := P.Origin_Displacement + Get_Dimensions(P.Structure);
    end Rotate_Z;
@@ -134,7 +169,7 @@ package body Part is
       P.Origin_Displacement.Y := P.Origin_Displacement.Y + Y;
       P.Origin_Displacement.Z := P.Origin_Displacement.Z + Z;
 
-      P.Bounding.Min := P.Origin_Displacement + Vec3'(1, 1, 1);
+      P.Bounding.Min := P.Origin_Displacement + 1;
       P.Bounding.Max := Get_Dimensions(P) + P.Origin_Displacement;
    end Move;
    
@@ -165,10 +200,23 @@ package body Part is
       end if;
    end Fits_In;
 
+   procedure Cache_Rotations(P: in out Part_Access) is
+   begin
+      for X in 0..3 loop
+         for Y in 0..3 loop
+            for Z in 0..3 loop
+               Rotate(P, X, Y, Z);
+               Copy(P.Structure, P.Rotation_Cache(X, Y, Z));
+            end loop;
+         end loop;
+      end loop;
+   end Cache_Rotations;
+
    function Parse_Part(Str: in Unbounded_String) return Part_Access is
       S: String := to_String(Str);
       X, Y, Z, Len: Integer;
       P: Part_Access;
+      Temp: Structure_Access;
    begin
       Get_Dimensions(Str, X, Y, Z, Len);
       P := new Part_Type(X, Y, Z);
@@ -176,8 +224,13 @@ package body Part is
       Parse_Structure(To_Unbounded_String(S(1..Length(Str)-Len)), P.Structure);
       Parse_Structure(To_Unbounded_String(S(1..Length(Str)-Len)), P.Start_Struct);
 
-      P.Bounding.Min := P.Origin_Displacement + Coordinates.Vec3'(1, 1, 1);
+      P.Bounding.Min := P.Origin_Displacement + 1;
       P.Bounding.Max := Coordinates.Vec3'(X, Y, Z) + P.Origin_Displacement;
+
+      P.Rotation_Cache(0, 0, 0) := new Structure_Type(X, Y, Z);
+      P.Rotation_Cache(0, 0, 0).all := P.Structure.all;
+      Cache_Rotations(P);
+      Reset(P);
 
       Return(P);
    end Parse_Part;    
@@ -208,23 +261,28 @@ package body Part is
    procedure Reset_Rotations(P: in out Part_Access) is
       dim: Vec3 := Get_Dimensions(P.Start_Struct);
    begin
-      Free_Memory(P.Structure);
-      P.Structure := new Structure_Type(dim.X, dim.Y, dim.Z);
-      P.Structure.all := P.Start_Struct.all;
+      P.Structure := P.Rotation_Cache(0, 0, 0);
       P.Rotations := (others => 0);
    end Reset_Rotations;
 
+   procedure Reset_Rotations_Internal(P: in out Part_Access) is
+      dim: Vec3 := Get_Dimensions(P.Start_Struct);
+   begin
+      Copy(P.Rotation_Cache(0, 0, 0), P.Structure);
+      P.Rotations := (others => 0);
+   end Reset_Rotations_Internal;
+
    procedure Rotate(P: in out Part_Access; X, Y, Z: in Integer) is
    begin
-      Reset_Rotations(P);
+      Reset_Rotations_Internal(P);
       for i in 1..X loop
-         Rotate_X(P);
+         Rotate_X_Internal(P);
       end loop;
       for i in 1..Y loop
-         Rotate_Y(P);
+         Rotate_Y_Internal(P);
       end loop;
       for i in 1..Z loop
-         Rotate_Z(P);
+         Rotate_Z_Internal(P);
       end loop;
    end Rotate;
 
