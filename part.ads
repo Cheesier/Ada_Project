@@ -41,6 +41,8 @@ package Part is
 
    function Collides(A, B: in Part_Access) return Boolean;
    function Fits_In(A, B: in Part_Access) return boolean;
+   procedure Empty(P: in Part_Access);
+   procedure Merge(A: in Part_Access; B: in out Part_Access);
 
 private
    procedure Rotate(P: in out Part_Access; X, Y, Z: in Integer);

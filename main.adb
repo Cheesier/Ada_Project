@@ -23,11 +23,13 @@ procedure main is
 
    Handle: Handler_Access;
    Solved: Boolean := True;
-   Test: Part_Access := Part.Parse_Part(To_Unbounded_String("3x2x1 111011"));
+   Test0: Part_Access := Part.Parse_Part(To_Unbounded_String("2x2x1 1111"));
+   Test1: Part_Access := Part.Parse_Part(To_Unbounded_String("2x2x1 1111"));
+   Test2: Part_Access := Part.Parse_Part(To_Unbounded_String("3x3x3 000000000000000000000000000"));
 begin
 
-  -- Uppkoppling mot servern och körning av solvern.
-   if Network.Init("localhost", 2600, To_Unbounded_String("Ost")) then
+   -- Uppkoppling mot servern och körning av solvern.
+   if Network.Init("localhost", 1234, To_Unbounded_String("Ost")) then
       Put_Line("Connection Established");
       loop
          Handle := new Handler_Type(Parse_Figure(Network.Get_Figure), 
@@ -35,20 +37,18 @@ begin
                                  Id);
          Split_Part_String(Handle, Network.get_Parts);
          Solver(Handle, Solved);
-      if Solved then
-         Network.Solution(Get_Result(Handle));
-         Solved := False;
-      else
-         Network.Give_Up(Id);
-      end if;
-      Id := Id+1;
-     exit when not Network.Get_Answer;
-   end loop;
+         if Solved then
+            Network.Solution(Get_Result(Handle));
+            Solved := False;
+         else
+            Network.Give_Up(Id);
+         end if;
+         Id := Id+1;
+         exit when not Network.Get_Answer;
+      end loop;
    Network.Get_Result;
 else
    Put_Line("Failed to establish connection to server");
 end if;
-
-null;
 
 end main;

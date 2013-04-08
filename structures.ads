@@ -37,6 +37,8 @@ package Structures is
    procedure Parse_Structure(Str: in Unbounded_String; Struct: in out Structure_Access);
    function Structure_To_String(Struct: in Structure_Access) return Unbounded_String;
    procedure Copy(A, B: in out Structure_Access);
+   procedure Empty(S: out Structure_Access);
+   procedure Merge(A: in Structure_Access; D: in Vec3; B: in out Structure_Access);
    
 private
    type Test_Arr is
@@ -44,10 +46,10 @@ private
    type Structure_Type(iX, iY, iZ : Positive) is
       record
          -- ineffective, but it's a start
-         X : Integer := iX;
-         Y : Integer := iY;
-         Z : Integer := iZ;
-         Data : Test_Arr(1..iX, 1..iY, 1..iZ) := (others => (others =>(others => false)));
+         X: Integer := iX;
+         Y: Integer := iY;
+         Z: Integer := iZ;
+         Data: Test_Arr(1..iX, 1..iY, 1..iZ) := (others => (others =>(others => false)));
       end record;
    procedure Free is new Ada.Unchecked_Deallocation
      (Object => Structure_Type, Name => Structure_Access);

@@ -166,6 +166,7 @@ package body Network is
       Get_Packet;
       Put("Terminating Session: ");
       Put_Line(Last_Packet.Message);
+      Close(Socket);
    end Terminate_Session;
 
    

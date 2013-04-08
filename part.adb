@@ -334,4 +334,14 @@ package body Part is
       B:= True;
    end Next_Pos;
 
+   procedure Empty(P: in Part_Access) is
+   begin
+      Empty(P.Structure);
+   end Empty;
+
+   procedure Merge(A: in Part_Access; B: in out Part_Access) is
+   begin
+      Merge(A.Structure, A.Origin_Displacement, B.Structure);
+   end Merge;
+
 end Part;

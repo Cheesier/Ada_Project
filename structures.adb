@@ -102,6 +102,12 @@ package body Structures is
       S.Data(X, Y, Z) := True;
    end Add;
 
+   procedure Set(S: in out Structure_Access; X, Y, Z: in Integer; Value: in Boolean) is
+   begin
+      S.Data(X, Y, Z) := Value;
+   end Set;
+
+
    function Is_Occupied(S: in Structure_Access; X, Y, Z: in Integer) return Boolean is
    begin
       --Put_Visual(S);
@@ -198,6 +204,24 @@ package body Structures is
       B := new Structure_Type(D.X, D.Y, D.Z);
       B.all := A.All;
    end Copy;
+
+   procedure Merge(A: in Structure_Access; D: in Vec3; B: in out Structure_Access) is
+   begin
+      for X in 1..A.X loop
+         for Y in 1..A.Y loop
+            for Z in 1..A.Z loop
+               if Is_Occupied(A, X, Y, Z) then
+                  Add(B, X+D.X, Y+D.Y, Z+D.Z);
+               end if;
+            end loop;
+         end loop;
+      end loop;
+   end Merge;
+
+   procedure Empty(S: out Structure_Access) is
+   begin
+      S.Data := (Others => (Others => (Others => False)));
+   end Empty;
 
    procedure Free_Memory(S: in out Structure_Access) is
    begin
