@@ -23,14 +23,11 @@ procedure main is
 
    Handle: Handler_Access;
    Solved: Boolean := True;
-   --Test0: Part_Access := Part.Parse_Part(To_Unbounded_String("2x2x1 1111"));
-   --Test1: Part_Access := Part.Parse_Part(To_Unbounded_String("2x2x1 1111"));
-   --Done: Part_Access := Part.Parse_Part(To_Unbounded_String("3x3x3 000000000000000000000000000"));
 begin
    null;
 
    -- Uppkoppling mot servern och körning av solvern.
-   if Network.Init("localhost", 1234, To_Unbounded_String("Ost")) then
+   if Network.Init("localhost", 1234, To_Unbounded_String("Ada_Group")) then
       Put_Line("Connection Established");
       loop
          Handle := new Handler_Type(Parse_Figure(Network.Get_Figure), 
@@ -51,21 +48,5 @@ begin
 else
    Put_Line("Failed to establish connection to server");
 end if;
-
-
--- Put_Visual(Done);
--- Put_Line("----");
-
--- Merge(Test0, Done);
--- Put_Visual(Done);
--- Put_Line("----");
-
--- Move(Test1, 0, 0, 1);
--- Merge(Test1, Done);
--- Put_Visual(Done);
--- Put_Line("----");
-
--- Subtract(Test0, Done);
--- Put_Visual(Done);
 
 end main;

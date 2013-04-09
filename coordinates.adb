@@ -31,24 +31,6 @@ package body Coordinates is
       end if;
    end Max;
 
-   -- function Minimize(A, B: in Vec3) return Vec3 is
-   --    Ret: Vec3;
-   -- begin
-   --    Ret.X := Min(A.X, B.X);
-   --    Ret.Y := Min(A.Y, B.Y);
-   --    Ret.Z := Min(A.Z, B.Z);
-   --    return Ret;
-   -- end Minimize;
-
-   -- function Positive_1(Item: in Vec3) return Vec3 is
-   --    Ret: Vec3 := Item;
-   -- begin
-   --    if Ret.X < 1 then Ret.X := 1; end if;
-   --    if Ret.Y < 1 then Ret.Y := 1; end if;
-   --    if Ret.Z < 1 then Ret.Z := 1; end if;
-   --    return Ret;
-   -- end Positive_1;
-
    function "="(Left, Right: in Vec3) return Boolean is
    begin
       return Left.X = Right.X and Left.Y = Right.Y and Left.Z = Right.Z;

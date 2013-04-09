@@ -28,7 +28,6 @@ package Structures is
 
    function Collides(A, B: in Structure_Access; Overlap: in AABB; Da, Db: in Vec3) return Boolean;
    function Fits_Inside(A, B: in Structure_Access; Overlap: in AABB; D: in Vec3) return Boolean;
---     function collides(a, b : in Structure_Type; Displacement : in Vec3) return boolean;
    function Get_Dimensions(S: in Structure_Access) return Vec3;
 --     -- ^ Needs to return a pair of Vec3! ^
 --     function structure_to_string(S : in Structure_Type) return String;
@@ -47,7 +46,6 @@ private
      array(Integer range <>, Integer range <>, Integer range <>) of Boolean;
    type Structure_Type(iX, iY, iZ : Positive) is
       record
-         -- ineffective, but it's a start
          X: Integer := iX;
          Y: Integer := iY;
          Z: Integer := iZ;

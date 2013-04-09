@@ -28,10 +28,6 @@ package body Network is
       Get(Socket, Last_Packet.Header);
       Get(Socket, Blank);
       Get_Line(Socket, Last_Packet.Message);
-
-      --Put("S->C: ");
-      --Put(Last_Packet.Header & " ");
-      --Put_Line(Last_Packet.Message);
    end Get_Packet;
 
 

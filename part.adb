@@ -240,20 +240,6 @@ package body Part is
       Return(P);
    end Parse_Part;
 
-   -- function Exists_In_Cache(S: in Structure_Access; P: in Part_Access) return Boolean is
-   -- begin
-   --    for X in Xa..3 loop
-   --       for Y in Ya..3 loop
-   --          for Z in Za+1..3 loop
-   --             if S = P.Rotation_Cache(X, Y, Z) and then Equals(S, P.Rotation_Cache(X, Y, Z)) then
-   --                return True;
-   --             end if;
-   --          end loop;
-   --       end loop;
-   --    end loop;
-   --    return False;
-   -- end Exists_In_Cache;
-
    function Exists_In_Unique_Rotations(S: in Structure_Access; P: in Part_Access) return Boolean is
    begin
       for I in 1..P.Unique_Count loop
@@ -340,28 +326,6 @@ package body Part is
          Rotate_Z_Internal(P);
       end loop;
    end Rotate;
-
-   -- procedure Rotate_Next(P: in out Part_Access; B: out Boolean) is
-   -- begin
-   --    if P.Rotations(3) < 3 then
-   --       Rotate_Z(P);
-   --    else
-   --       Rotate_Z(P);
-   --       if P.Rotations(2) < 3 then
-   --          Rotate_Y(P);
-   --       else
-   --          Rotate_Y(P);
-   --          if P.Rotations(1) < 3 then
-   --             Rotate_X(P);
-   --          else
-   --             Rotate_X(P);
-   --             B := False;
-   --             return;
-   --          end if;
-   --       end if;
-   --    end if;
-   --    B := True;
-   -- end Rotate_Next;
 
    procedure Rotate_Next(P: in out Part_Access; B: out Boolean) is
    begin
