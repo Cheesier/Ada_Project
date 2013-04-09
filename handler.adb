@@ -43,7 +43,7 @@ package body Handler is
    procedure Solver(H: in out Handler_Access; Solved: out Boolean) is
       Dim: Vec3 := Part.Get_Dimensions(H.Figure);
       Merged: array (1..H.Parts'Length) of Part_Access := (Others => new Part_Type(Dim.X, Dim.Y, Dim.Z));
-      Count: Integer := 0;
+      Count, Count2: Integer := 0;
 
       procedure Solver_Do(I: in Integer) is
          Colliding: Boolean := False;
@@ -59,11 +59,16 @@ package body Handler is
             Part.Merge(Merged(I-1), Merged(I));
          end if;
 
+         if I = 6 then
+            Put(I);
+         end if;
+
          loop
-            Count := Count + 1;
             if Fits_In(H.Parts(I), H.Figure) then
-               if Collides(Merged(I), H.Parts(I)) then
-                  Colliding := True;
+               if I /= 1 then
+                  if Collides(Merged(I-1), H.Parts(I)) then
+                     Colliding := True;
+                  end if;
                end if;
             else
                Colliding := True;
@@ -103,6 +108,7 @@ package body Handler is
       end loop;
       Solver_Do(1); -- Start at first part, and then dig in
       Put(Count, 0); New_Line;
+      Put(Count2, 0); New_Line;
    end Solver;
 
    function Block_Check(H: in Handler_Access) return Boolean is
