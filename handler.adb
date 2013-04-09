@@ -56,17 +56,14 @@ package body Handler is
          end if;
 
          if I /= 1 then
+            Empty(Merged(I));
             Part.Merge(Merged(I-1), Merged(I));
-         end if;
-
-         if I = 6 then
-            Put(I);
-         end if;
+         end if;    
 
          loop
             if Fits_In(H.Parts(I), H.Figure) then
                if I /= 1 then
-                  if Collides(Merged(I-1), H.Parts(I)) then
+                  if Collides(Merged(I), H.Parts(I)) then
                      Colliding := True;
                   end if;
                end if;
