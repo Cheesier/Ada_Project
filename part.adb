@@ -37,6 +37,11 @@ package body Part is
       New_Line;
       Put("---------------------------");
    end Put;
+
+   function Equals(Left, Right: in Part_Access) return Boolean is
+   begin
+      return Equals(Left.Structure, Right.Structure);
+   end Equals;
    
    function Get_Result(P: in Part_Access) return Unbounded_String is
       U: Unbounded_String;
@@ -232,7 +237,43 @@ package body Part is
       Reset(P);
 
       Return(P);
-   end Parse_Part;    
+   end Parse_Part;
+
+   -- function Exists_In_Cache(S: in Structure_Access; P: in Part_Access) return Boolean is
+   -- begin
+   --    for X in Xa..3 loop
+   --       for Y in Ya..3 loop
+   --          for Z in Za+1..3 loop
+   --             if S = P.Rotation_Cache(X, Y, Z) and then Equals(S, P.Rotation_Cache(X, Y, Z)) then
+   --                return True;
+   --             end if;
+   --          end loop;
+   --       end loop;
+   --    end loop;
+   --    return False;
+   -- end Exists_In_Cache;
+
+   -- function Exists_In_Unique_Rotations(S: in Structure_Access; P: in Part_Access) return Boolean is
+   -- begin
+   --    for I in 1..P.Unique_Rotations loop
+   --       if Equals(S, P.Unique_Rotations(I)) then
+   --          return True;
+   --       end if;
+   --       return False;
+   --    end loop;
+   -- end Exists_In_Unique_Rotations;
+
+   -- procedure Find_Unique_Rotations(P: in Part_Access) is
+   --    D: Get_Dimensions(P);
+   -- begin
+   --    for X in 0..3 loop
+   --       for Y in 0..3 loop
+   --          for Z in 0..3 loop
+   --             null;
+   --          end loop;
+   --       end loop;
+   --    end loop;
+   -- end Find_Unique_Rotations;
 
    function Get_Dimensions(P: in Part_Access) return Vec3 is
    begin

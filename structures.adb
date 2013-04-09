@@ -29,6 +29,25 @@ package body Structures is
       end loop;
    end Put_Visual;
 
+   function Equals(L, R: in Structure_Access) return Boolean is
+   begin
+      -- check dimensions first
+      if L.X = R.X and L.Y = R.Y and L.Z = R.Z then
+         return True;
+      end if;
+
+      for X in 1..L.X loop
+         for Y in 1..L.Y loop
+            for Z in 1..L.Z loop
+               if Is_Occupied(L, X, Y, Z) and not Is_Occupied(R, X, Y, Z) then
+                  return False;
+               end if;
+            end loop;
+         end loop;
+      end loop;
+      return True;
+   end Equals;
+
    procedure Rotate_X(S : in out Structure_Access) is
       Temp : Structure_Access := new Structure_Type(S.X, S.Z, S.Y);
    begin

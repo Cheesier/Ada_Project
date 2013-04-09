@@ -54,6 +54,7 @@ private
 
    type Rot_Arr is array(1..3) of Integer;
    type Cache_Arr is array(0..3, 0..3, 0..3) of Structure_Access;
+   type Unique_Rotation_Arr is array(1..64) of Structure_Access;
 
    type Part_Type(X, Y, Z: Integer) is
       record
@@ -63,6 +64,8 @@ private
          Start_Struct: Structure_Access := new Structure_Type(X, Y, Z);
          Rotations: Rot_Arr := (others => 0);
          Rotation_Cache: Cache_Arr;
+         Unique_Rotations: Unique_Rotation_Arr;
+         Unique_Count: Integer := 0;
       end record;
 
 end Part;

@@ -18,6 +18,7 @@ package Structures is
    type Structure_Access is access Structure_Type;
 
    procedure Put_Visual(S: in Structure_Access);
+   function Equals(L, R: in Structure_Access) return Boolean;
    procedure Rotate_X(S: in out Structure_Access);
    procedure Rotate_Y(S: in out Structure_Access);
    procedure Rotate_Z(S: in out Structure_Access);

@@ -26,8 +26,8 @@ package Coordinates is
    function "-"(Left, Right: in Vec3) return Vec3;
    function "-"(Left: in AABB; Right: in Vec3) return AABB;
 
-   function Minimize(A, B: in Vec3) return Vec3;
-   function Positive_1(Item: in Vec3) return Vec3;
+   -- function Minimize(A, B: in Vec3) return Vec3;
+   -- function Positive_1(Item: in Vec3) return Vec3;
    
    function Collides(A, B: in AABB) return Boolean;
    function Fits_In(A, B: in AABB) return Boolean;
