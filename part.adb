@@ -272,6 +272,10 @@ package body Part is
                if not Exists_In_Unique_Rotations(P.Rotation_Cache(X, Y, Z), P) then
                   P.Unique_Count := P.Unique_Count + 1;
                   P.Unique_Rotations(P.Unique_Count) := P.Rotation_Cache(X, Y, Z);
+
+                  P.Rotation_Pattern(P.Unique_Count)(1) := X;
+                  P.Rotation_Pattern(P.Unique_Count)(2) := Y;
+                  P.Rotation_Pattern(P.Unique_Count)(3) := Z;
                end if; 
             end loop;
          end loop;
@@ -337,26 +341,44 @@ package body Part is
       end loop;
    end Rotate;
 
+   -- procedure Rotate_Next(P: in out Part_Access; B: out Boolean) is
+   -- begin
+   --    if P.Rotations(3) < 3 then
+   --       Rotate_Z(P);
+   --    else
+   --       Rotate_Z(P);
+   --       if P.Rotations(2) < 3 then
+   --          Rotate_Y(P);
+   --       else
+   --          Rotate_Y(P);
+   --          if P.Rotations(1) < 3 then
+   --             Rotate_X(P);
+   --          else
+   --             Rotate_X(P);
+   --             B := False;
+   --             return;
+   --          end if;
+   --       end if;
+   --    end if;
+   --    B := True;
+   -- end Rotate_Next;
+
    procedure Rotate_Next(P: in out Part_Access; B: out Boolean) is
    begin
-      if P.Rotations(3) < 3 then
-         Rotate_Z(P);
+      if P.Current_Rotation = P.Unique_Count then
+         P.Current_Rotation := 1;
+         B := False;
       else
-         Rotate_Z(P);
-         if P.Rotations(2) < 3 then
-            Rotate_Y(P);
-         else
-            Rotate_Y(P);
-            if P.Rotations(1) < 3 then
-               Rotate_X(P);
-            else
-               Rotate_X(P);
-               B := False;
-               return;
-            end if;
-         end if;
+         P.Current_Rotation := P.Current_Rotation + 1;
+         B := True;
       end if;
-      B := True;
+
+      P.Structure := P.Unique_Rotations(P.Current_Rotation);
+      P.Bounding.Max := P.Origin_Displacement + Get_Dimensions(P.Structure);
+
+      P.Rotations(1) := P.Rotation_Pattern(P.Current_Rotation)(1);
+      P.Rotations(2) := P.Rotation_Pattern(P.Current_Rotation)(2);
+      P.Rotations(3) := P.Rotation_Pattern(P.Current_Rotation)(3);
    end Rotate_Next;
 
    procedure Next_Pos(Part: in out Part_Access; Fig: in Part_Access; B: out Boolean) is

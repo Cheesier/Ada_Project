@@ -33,7 +33,7 @@ package body Structures is
    begin
       -- check dimensions first
       if L.X /= R.X or L.Y /= R.Y or L.Z /= R.Z then
-         return True;
+         return False;
       end if;
 
       for X in 1..L.X loop
