@@ -221,7 +221,6 @@ package body Part is
       S: String := to_String(Str);
       X, Y, Z, Len: Integer;
       P: Part_Access;
-      Temp: Structure_Access;
    begin
       Get_Dimensions(Str, X, Y, Z, Len);
       P := new Part_Type(X, Y, Z);
@@ -234,6 +233,8 @@ package body Part is
       P.Rotation_Cache(0, 0, 0) := new Structure_Type(X, Y, Z);
       P.Rotation_Cache(0, 0, 0).all := P.Structure.all;
       Cache_Rotations(P);
+      Find_Unique_Rotations(P);
+
       Reset(P);
 
       Return(P);
@@ -253,27 +254,30 @@ package body Part is
    --    return False;
    -- end Exists_In_Cache;
 
-   -- function Exists_In_Unique_Rotations(S: in Structure_Access; P: in Part_Access) return Boolean is
-   -- begin
-   --    for I in 1..P.Unique_Rotations loop
-   --       if Equals(S, P.Unique_Rotations(I)) then
-   --          return True;
-   --       end if;
-   --       return False;
-   --    end loop;
-   -- end Exists_In_Unique_Rotations;
+   function Exists_In_Unique_Rotations(S: in Structure_Access; P: in Part_Access) return Boolean is
+   begin
+      for I in 1..P.Unique_Count loop
+         if Equals(S, P.Unique_Rotations(I)) then
+            return True;
+         end if;
+      end loop;
+      return False;
+   end Exists_In_Unique_Rotations;
 
-   -- procedure Find_Unique_Rotations(P: in Part_Access) is
-   --    D: Get_Dimensions(P);
-   -- begin
-   --    for X in 0..3 loop
-   --       for Y in 0..3 loop
-   --          for Z in 0..3 loop
-   --             null;
-   --          end loop;
-   --       end loop;
-   --    end loop;
-   -- end Find_Unique_Rotations;
+   procedure Find_Unique_Rotations(P: in Part_Access) is
+   begin
+      for X in 0..3 loop
+         for Y in 0..3 loop
+            for Z in 0..3 loop
+               if not Exists_In_Unique_Rotations(P.Rotation_Cache(X, Y, Z), P) then
+                  P.Unique_Count := P.Unique_Count + 1;
+                  P.Unique_Rotations(P.Unique_Count) := P.Rotation_Cache(X, Y, Z);
+               end if; 
+            end loop;
+         end loop;
+      end loop;
+      Put("Unique Rotations: "); Put(P.Unique_Count, 0); New_Line;
+   end Find_Unique_Rotations;
 
    function Get_Dimensions(P: in Part_Access) return Vec3 is
    begin

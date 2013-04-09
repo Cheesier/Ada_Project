@@ -32,7 +32,7 @@ package body Structures is
    function Equals(L, R: in Structure_Access) return Boolean is
    begin
       -- check dimensions first
-      if L.X = R.X and L.Y = R.Y and L.Z = R.Z then
+      if L.X /= R.X or L.Y /= R.Y or L.Z /= R.Z then
          return True;
       end if;
 

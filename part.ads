@@ -52,6 +52,9 @@ private
    procedure Rotate_Y_Internal(P : in out Part_Access);
    procedure Rotate_Z_Internal(P : in out Part_Access);
 
+   function Exists_In_Unique_Rotations(S: in Structure_Access; P: in Part_Access) return Boolean;
+   procedure Find_Unique_Rotations(P: in Part_Access);
+
    type Rot_Arr is array(1..3) of Integer;
    type Cache_Arr is array(0..3, 0..3, 0..3) of Structure_Access;
    type Unique_Rotation_Arr is array(1..64) of Structure_Access;
