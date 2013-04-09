@@ -39,6 +39,7 @@ package Structures is
    procedure Copy(A, B: in out Structure_Access);
    procedure Empty(S: out Structure_Access);
    procedure Merge(A: in Structure_Access; D: in Vec3; B: in out Structure_Access);
+   procedure Subtract(A: in Structure_Access; D: in Vec3; B: in out Structure_Access);
    
 private
    type Test_Arr is

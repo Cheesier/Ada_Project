@@ -32,6 +32,7 @@ package Part is
    function Get_Dimensions(P: in Part_Access) return Vec3;   
    function Part_To_String(P: in Part_Access) return Unbounded_String;
    function Parse_Part(Str: in Unbounded_String) return Part_Access;
+   procedure Fix_Bounding(P: in out Part_Access);
    function Get_Nr_Of_Blocks(P: in Part_Access) return Integer;
    procedure Next_Pos(Part: in out Part_Access; Fig: in Part_Access; B: out Boolean);
 
@@ -43,6 +44,7 @@ package Part is
    function Fits_In(A, B: in Part_Access) return boolean;
    procedure Empty(P: in Part_Access);
    procedure Merge(A: in Part_Access; B: in out Part_Access);
+   procedure Subtract(A: in Part_Access; B: in out Part_Access);
 
 private
    procedure Rotate(P: in out Part_Access; X, Y, Z: in Integer);

@@ -20,7 +20,7 @@ package Coordinates is
          Min: Vec3 := Vec3'(1, 1, 1);
          Max: Vec3 := Vec3'(1, 1, 1);
       end record;
-
+   
    function "+"(Left, Right: in Vec3) return Vec3;
    function "+"(Left: in Vec3; Right: in Integer) return Vec3;
    function "-"(Left, Right: in Vec3) return Vec3;

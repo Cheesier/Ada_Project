@@ -9,6 +9,8 @@
 -----------------------------------------------------------
 with Ada.Strings; use Ada.Strings;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
+with Coordinates; use Coordinates;
+with Part; use Part;
 
 package body Handler is
 
@@ -39,45 +41,55 @@ package body Handler is
    end Parse_Figure;
 
    procedure Solver(H: in out Handler_Access; Solved: out Boolean) is
+      Dim: Vec3 := Part.Get_Dimensions(H.Figure);
+      Merged: array (1..H.Parts'Length) of Part_Access := (Others => new Part_Type(Dim.X, Dim.Y, Dim.Z));
+      Count: Integer := 0;
 
       procedure Solver_Do(I: in Integer) is
          Colliding: Boolean := False;
          Has_Next_Pos: Boolean := True;
+         
       begin
-         if I < 5 then
-            Put(I, 0); New_Line;
-         end if;
          if I > H.Parts'Length then -- Checks if it is solved
             Solved := True;
             return;
          end if;
+
+         if I /= 1 then
+            Part.Merge(Merged(I-1), Merged(I));
+         end if;
+
          loop
-            if not Fits_In(H.Parts(I), H.Figure) then
-               Put_Line("Not fits in");
-               colliding := True;
-               Next_Pos(H.Parts(I), H.Figure, Has_Next_Pos);
+            Count := Count + 1;
+            if Fits_In(H.Parts(I), H.Figure) then
+               if Collides(Merged(I), H.Parts(I)) then
+                  Colliding := True;
+               end if;
             else
-               for J in 1..I-1 loop
-                  if Collides(H.Parts(J), H.Parts(I)) then
-                     Colliding := True;
-                     Next_Pos(H.Parts(I), H.Figure, Has_Next_Pos);
-                     exit;
-                  end if;
-               end loop;
+               Colliding := True;
             end if;
 
             if not Colliding then
+               Part.Merge(H.Parts(I), Merged(I));
+
+               -- Put("I: "); Put(I, 0); New_Line;
+               -- Put_Visual(Merged(I));
+               -- Put_Line("-----");
+
                Solver_Do(I + 1);
-               if not solved then
-                  Next_Pos(H.Parts(I), H.Figure, Has_Next_Pos);
-               else 
+               Part.Subtract(H.Parts(I), Merged(I));
+               if Solved then
                   return;
                end if;
-            elsif not Has_Next_Pos then
-               reset(H.parts(I));
+            end if;
+
+            Next_Pos(H.Parts(I), H.Figure, Has_Next_Pos);
+            Colliding := False;
+            if not Has_Next_Pos then
+               Reset(H.parts(I));
                return;
             end if;
-            Colliding := False;
+
          end loop;
       end Solver_Do;
 
@@ -86,7 +98,11 @@ package body Handler is
       if not Block_Check(H) then
          return;
       end if;
+      for I in H.Parts'Range loop
+         Fix_Bounding(Merged(I));
+      end loop;
       Solver_Do(1); -- Start at first part, and then dig in
+      Put(Count, 0); New_Line;
    end Solver;
 
    function Block_Check(H: in Handler_Access) return Boolean is

@@ -218,6 +218,19 @@ package body Structures is
       end loop;
    end Merge;
 
+   procedure Subtract(A: in Structure_Access; D: in Vec3; B: in out Structure_Access) is
+   begin
+      for X in 1..A.X loop
+         for Y in 1..A.Y loop
+            for Z in 1..A.Z loop
+               if Is_Occupied(A, X, Y, Z) then
+                  Set(B, X+D.X, Y+D.Y, Z+D.Z, False);
+               end if;
+            end loop;
+         end loop;
+      end loop;
+   end Subtract;
+
    procedure Empty(S: out Structure_Access) is
    begin
       S.Data := (Others => (Others => (Others => False)));

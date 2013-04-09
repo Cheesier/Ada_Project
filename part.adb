@@ -174,7 +174,7 @@ package body Part is
    end Move;
    
    function Collides(A, B: in Part_Access) return Boolean is
-   begin
+   begin      
       if Coordinates.Collides(A.Bounding, B.Bounding) then
          return Structures.Collides(
                   A.Structure,
@@ -224,8 +224,7 @@ package body Part is
       Parse_Structure(To_Unbounded_String(S(1..Length(Str)-Len)), P.Structure);
       Parse_Structure(To_Unbounded_String(S(1..Length(Str)-Len)), P.Start_Struct);
 
-      P.Bounding.Min := P.Origin_Displacement + 1;
-      P.Bounding.Max := Coordinates.Vec3'(X, Y, Z) + P.Origin_Displacement;
+      Fix_Bounding(P);
 
       P.Rotation_Cache(0, 0, 0) := new Structure_Type(X, Y, Z);
       P.Rotation_Cache(0, 0, 0).all := P.Structure.all;
@@ -250,6 +249,13 @@ package body Part is
    begin
       return Structure_To_String(P.Structure);
    end Part_To_String;
+
+   procedure Fix_Bounding(P: in out Part_Access) is
+      D: Vec3 := Get_Dimensions(P);
+   begin
+      P.Bounding.Min := P.Origin_Displacement + 1;
+      P.Bounding.Max := Coordinates.Vec3'(D.X, D.Y, D.Z) + P.Origin_Displacement;
+   end Fix_Bounding;
 
    procedure Reset(P: in out Part_Access) is
    begin
@@ -343,5 +349,10 @@ package body Part is
    begin
       Merge(A.Structure, A.Origin_Displacement, B.Structure);
    end Merge;
+
+   procedure Subtract(A: in Part_Access; B: in out Part_Access) is
+   begin
+      Subtract(A.Structure, A.Origin_Displacement, B.Structure);
+   end Subtract;
 
 end Part;

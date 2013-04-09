@@ -25,7 +25,7 @@ procedure main is
    Solved: Boolean := True;
    Test0: Part_Access := Part.Parse_Part(To_Unbounded_String("2x2x1 1111"));
    Test1: Part_Access := Part.Parse_Part(To_Unbounded_String("2x2x1 1111"));
-   Test2: Part_Access := Part.Parse_Part(To_Unbounded_String("3x3x3 000000000000000000000000000"));
+   Done: Part_Access := Part.Parse_Part(To_Unbounded_String("3x3x3 000000000000000000000000000"));
 begin
 
    -- Uppkoppling mot servern och körning av solvern.
@@ -50,5 +50,21 @@ begin
 else
    Put_Line("Failed to establish connection to server");
 end if;
+
+
+-- Put_Visual(Done);
+-- Put_Line("----");
+
+-- Merge(Test0, Done);
+-- Put_Visual(Done);
+-- Put_Line("----");
+
+-- Move(Test1, 0, 0, 1);
+-- Merge(Test1, Done);
+-- Put_Visual(Done);
+-- Put_Line("----");
+
+-- Subtract(Test0, Done);
+-- Put_Visual(Done);
 
 end main;
