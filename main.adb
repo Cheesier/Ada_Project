@@ -19,34 +19,40 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Strings.Unbounded.Text_IO; use Ada.Strings.Unbounded.Text_IO;
 
 procedure main is
-   Id: Integer := 1;
-
    Handle: Handler_Access;
-   Solved: Boolean := True;
+   Solved: Boolean;
+
+   procedure Work(Id: in Integer) is
+   begin
+      Handle := new Handler_Type(Parse_Figure(Network.Get_Figure), 
+                                 Get_Nr_Of_Parts(Network.Get_Parts),
+                                 Id);
+      Split_Part_String(Handle, Network.get_Parts);
+      Solver(Handle, Solved);
+      if Solved then
+         Network.Solution(Get_Result(Handle));
+      else
+         Network.Give_Up(Id);
+      end if;
+
+      if Network.Get_Answer then
+         Work(Id + 1);
+      end if;
+   end Work;
+
 begin
    null;
 
    -- Uppkoppling mot servern och körning av solvern.
-   if Network.Init("localhost", 1234, To_Unbounded_String("Ada_Group")) then
+   if Network.Init("localhost", 1234, To_Unbounded_String("VORO")) then
       Put_Line("Connection Established");
-      loop
-         Handle := new Handler_Type(Parse_Figure(Network.Get_Figure), 
-                                 Get_Nr_Of_Parts(Network.Get_Parts),
-                                 Id);
-         Split_Part_String(Handle, Network.get_Parts);
-         Solver(Handle, Solved);
-         if Solved then
-            Network.Solution(Get_Result(Handle));
-            Solved := False;
-         else
-            Network.Give_Up(Id);
-         end if;
-         Id := Id+1;
-         exit when not Network.Get_Answer;
-      end loop;
-   Network.Get_Result;
-else
-   Put_Line("Failed to establish connection to server");
-end if;
+      
+      -- A bug with for-loops force us to use recursive
+      Work(1);
+
+      Network.Get_Result;
+   else
+      Put_Line("Failed to establish connection to server");
+   end if;
 
 end main;
