@@ -22,10 +22,10 @@ package body Handler is
       end loop;
    end Put;
 
-   function Get_Result(H: in Handler_Access) return Unbounded_String is
+   function Get_Result(H: in Handler_Access; Id: in Integer) return Unbounded_String is
       U: Unbounded_String;
    begin
-      Append(U, Trim(To_Unbounded_String(Integer'Image(H.Id)), Ada.Strings.Left));
+      Append(U, Trim(To_Unbounded_String(Integer'Image(Id)), Ada.Strings.Left));
       for I in 1..H.Parts'Length loop
          Append(U, Get_Result(H.Parts(I)));
       end loop;
@@ -33,15 +33,16 @@ package body Handler is
    end Get_Result;
 
    function Parse_Figure(U: in Unbounded_String) return Part_Access is
-   Str : Unbounded_String;
-   C: Integer := Integer'Image(Get_Nr_Of_Parts(U))'Length+1;
+      Str : Unbounded_String;
+      C: Integer := Integer'Image(Get_Nr_Of_Parts(U))'Length+1;
    begin
       Str := To_Unbounded_String(Slice(U, C, Length(U)));
       return Parse_Part(Str);
    end Parse_Figure;
 
-   procedure Solver(H: in out Handler_Access; Solved: out Boolean) is
-      Dim: Vec3 := Part.Get_Dimensions(H.Figure);
+   procedure Solver(H: in out Handler_Access; Figure_String: in Unbounded_String; Solved: out Boolean) is
+      Figure: Part_Access := Parse_Figure(Figure_String);
+      Dim: Vec3 := Part.Get_Dimensions(Figure);
       Merged: array (1..H.Parts'Length) of Part_Access := (Others => new Part_Type(Dim.X, Dim.Y, Dim.Z));
       Count, Count2: Integer := 0;
 
@@ -61,7 +62,7 @@ package body Handler is
          end if;    
 
          loop
-            if Fits_In(H.Parts(I), H.Figure) then
+            if Fits_In(H.Parts(I), Figure) then
                if I /= 1 then
                   if Collides(Merged(I), H.Parts(I)) then
                      Colliding := True;
@@ -85,7 +86,7 @@ package body Handler is
                end if;
             end if;
 
-            Next_Pos(H.Parts(I), H.Figure, Has_Next_Pos);
+            Next_Pos(H.Parts(I), Figure, Has_Next_Pos);
             Colliding := False;
             if not Has_Next_Pos then
                Reset(H.parts(I));
@@ -97,10 +98,11 @@ package body Handler is
 
    begin
       Solved := False;
-      if not Block_Check(H) then
+      if not Block_Check(H, Figure) then
          return;
       end if;
       for I in H.Parts'Range loop
+         Reset(H.Parts(I)); -- Reset all the parts before we start
          Fix_Bounding(Merged(I));
       end loop;
       Solver_Do(1); -- Start at first part, and then dig in
@@ -108,13 +110,13 @@ package body Handler is
       Put(Count2, 0); New_Line;
    end Solver;
 
-   function Block_Check(H: in Handler_Access) return Boolean is
+   function Block_Check(H: in Handler_Access; Figure: in Part_Access) return Boolean is
       Count: Integer := 0;
    begin
       for I in 1..H.Parts'Length loop
          Count := Count + Get_Nr_Of_Blocks(H.Parts(I));
       end loop;
-      return Count = Get_Nr_Of_Blocks(H.Figure);
+      return Count = Get_Nr_Of_Blocks(Figure);
    end Block_Check;
 
    

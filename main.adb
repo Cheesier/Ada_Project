@@ -29,25 +29,22 @@ begin
    -- Uppkoppling mot servern och körning av solvern.
    if Network.Init("localhost", 1234, To_Unbounded_String("VORO")) then
       Put_Line("Connection Established");
+
+      Handle := new Handler_Type(Get_Nr_Of_Parts(Network.Get_Parts));
+      Split_Part_String(Handle, Network.Get_Parts);
       
-      -- http://xkcd.com/292/
-      <<Next>>
+      loop
+         Solver(Handle, Network.Get_Figure, Solved);
 
-      Handle := new Handler_Type(Parse_Figure(Network.Get_Figure), 
-                                 Get_Nr_Of_Parts(Network.Get_Parts),
-                                 Id);
-      Split_Part_String(Handle, Network.get_Parts);
-      Solver(Handle, Solved);
-      if Solved then
-         Network.Solution(Get_Result(Handle));
-      else
-         Network.Give_Up(Id);
-      end if;
+         if Solved then
+            Network.Solution(Get_Result(Handle, Id));
+         else
+            Network.Give_Up(Id);
+         end if;
 
-      if Network.Get_Answer then
          Id := Id + 1;
-         goto Next; -- http://xkcd.com/292/
-      end if;
+         exit when not Network.Get_Answer;
+      end loop;
 
       Network.Get_Result;
    else
