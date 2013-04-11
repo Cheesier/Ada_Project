@@ -19,11 +19,20 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Strings.Unbounded.Text_IO; use Ada.Strings.Unbounded.Text_IO;
 
 procedure main is
+   Id: Integer := 1;
    Handle: Handler_Access;
    Solved: Boolean;
 
-   procedure Work(Id: in Integer) is
-   begin
+begin
+   null;
+
+   -- Uppkoppling mot servern och körning av solvern.
+   if Network.Init("localhost", 1234, To_Unbounded_String("VORO")) then
+      Put_Line("Connection Established");
+      
+      -- http://xkcd.com/292/
+      <<Next>>
+
       Handle := new Handler_Type(Parse_Figure(Network.Get_Figure), 
                                  Get_Nr_Of_Parts(Network.Get_Parts),
                                  Id);
@@ -36,19 +45,9 @@ procedure main is
       end if;
 
       if Network.Get_Answer then
-         Work(Id + 1);
+         Id := Id + 1;
+         goto Next; -- http://xkcd.com/292/
       end if;
-   end Work;
-
-begin
-   null;
-
-   -- Uppkoppling mot servern och körning av solvern.
-   if Network.Init("localhost", 1234, To_Unbounded_String("VORO")) then
-      Put_Line("Connection Established");
-      
-      -- A bug with for-loops force us to use recursive
-      Work(1);
 
       Network.Get_Result;
    else
