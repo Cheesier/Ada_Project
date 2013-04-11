@@ -12,6 +12,9 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Strings.Unbounded.Text_IO; use Ada.Strings.Unbounded.Text_IO;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
+with GNAT.Calendar; use GNAT.Calendar;
+with Ada.Calendar;
+with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 
 package body Network is
    Socket: Socket_Type;
@@ -30,10 +33,30 @@ package body Network is
       Get_Line(Socket, Last_Packet.Message);
    end Get_Packet;
 
+   function Append_Zero(Value: in Natural) return Unbounded_String is
+      Ret: Unbounded_String;
+   begin
+      if Value < 10 then
+         Append(Ret, '0');
+      end if;
+      Append(Ret, Trim(Integer'Image(Value), Ada.Strings.Left));
+      return Ret;
+   end Append_Zero;
+
+   function Get_Time return Unbounded_String is
+      Now: Ada.Calendar.Time := Ada.Calendar.Clock;
+      Ret: Unbounded_String;
+   begin
+      Ret := Append_Zero(Hour(Now)) & ":" &
+          Append_Zero(Minute(Now)) & ":" &
+          Append_Zero(Second(Now)) & " ";
+      return Ret;
+   end Get_Time;
 
    procedure Send(Header: in Character; Message: in Unbounded_String) is
    begin
-      Put(Socket, "05:05:05 ");
+      Put(Get_Time);
+      Put(Socket, Get_Time);
       Put(Socket, Header);
       Put(Socket, ' ');
       Put(Socket, Message);
