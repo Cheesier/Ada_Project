@@ -297,11 +297,6 @@ package body Part is
       Reset_Rotations(P);
       P.Origin_Displacement := Vec3'(0, 0, 0);
       P.Bounding := AABB'(Vec3'(1, 1, 1), Get_Dimensions(P));
-      
-      P.Current_Rotation := 0;
-      P.Rotations(1) := 0;
-      P.Rotations(2) := 0;
-      P.Rotations(3) := 0;
    end Reset;
 
    procedure Reset_Rotations(P: in out Part_Access) is
@@ -309,6 +304,7 @@ package body Part is
    begin
       P.Structure := P.Rotation_Cache(0, 0, 0);
       P.Rotations := (others => 0);
+      P.Current_Rotation := 0;
    end Reset_Rotations;
 
    procedure Reset_Rotations_Internal(P: in out Part_Access) is
