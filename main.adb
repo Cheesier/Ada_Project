@@ -33,7 +33,7 @@ begin
       
       loop
          Solver(Handle, Network.Get_Figure, Solved);
-
+         
          if Solved then
             Network.Solution(Get_Result(Handle, Id));
          else

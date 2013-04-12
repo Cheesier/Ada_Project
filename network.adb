@@ -55,7 +55,6 @@ package body Network is
 
    procedure Send(Header: in Character; Message: in Unbounded_String) is
    begin
-      Put(Get_Time);
       Put(Socket, Get_Time);
       Put(Socket, Header);
       Put(Socket, ' ');

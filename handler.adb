@@ -44,7 +44,6 @@ package body Handler is
       Figure: Part_Access := Parse_Figure(Figure_String);
       Dim: Vec3 := Part.Get_Dimensions(Figure);
       Merged: array (1..H.Parts'Length) of Part_Access := (Others => new Part_Type(Dim.X, Dim.Y, Dim.Z));
-      Count, Count2: Integer := 0;
 
       procedure Solver_Do(I: in Integer) is
          Colliding: Boolean := False;
@@ -102,8 +101,6 @@ package body Handler is
          Fix_Bounding(Merged(I));
       end loop;
       Solver_Do(1); -- Start at first part, and then dig in
-      Put(Count, 0); New_Line;
-      Put(Count2, 0); New_Line;
    end Solver;
 
    function Block_Check(H: in Handler_Access; Figure: in Part_Access) return Boolean is

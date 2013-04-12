@@ -46,7 +46,6 @@ package body Part is
       U: Unbounded_String;
    begin
       Append(U, " !");
-      Put(P);
       
       Append(U, Integer'Image(P.Rotation_Pattern(P.Current_Rotation).X));
       Append(U, Integer'Image(P.Rotation_Pattern(P.Current_Rotation).Y));
@@ -151,18 +150,6 @@ package body Part is
       end if;
    end Fits_In;
 
-   procedure Cache_Rotations(P: in out Part_Access) is
-   begin
-      for X in 0..3 loop
-         for Y in 0..3 loop
-            for Z in 0..3 loop
-               Rotate(P, X, Y, Z);
-               Copy(P.Structure, P.Rotation_Cache(X, Y, Z));
-            end loop;
-         end loop;
-      end loop;
-   end Cache_Rotations;
-
    -- An init like this cannot be rotated
    function Parse_Figure_Part(Str: in Unbounded_String) return Part_Access is
       S: String := to_String(Str);
@@ -173,7 +160,6 @@ package body Part is
       P := new Part_Type(X, Y, Z);
       S(1..Length(Str)-Len) := Slice(Str, Len+1, Length(Str));
       Parse_Structure(To_Unbounded_String(S(1..Length(Str)-Len)), P.Structure);
-      Parse_Structure(To_Unbounded_String(S(1..Length(Str)-Len)), P.Start_Struct);
 
       Fix_Bounding(P);
       
@@ -189,13 +175,12 @@ package body Part is
       P := new Part_Type(X, Y, Z);
       S(1..Length(Str)-Len) := Slice(Str, Len+1, Length(Str));
       Parse_Structure(To_Unbounded_String(S(1..Length(Str)-Len)), P.Structure);
-      Parse_Structure(To_Unbounded_String(S(1..Length(Str)-Len)), P.Start_Struct);
+      
+      P.Unique_Rotations(1) := new Structure_Type(X, Y, Z);
+      P.Unique_Rotations(1).all := P.Structure.all;
 
       Fix_Bounding(P);
 
-      P.Rotation_Cache(0, 0, 0) := new Structure_Type(X, Y, Z);
-      P.Rotation_Cache(0, 0, 0).all := P.Structure.all;
-      Cache_Rotations(P);
       Find_Unique_Rotations(P);
 
       Reset(P);
@@ -213,16 +198,21 @@ package body Part is
       return False;
    end Exists_In_Unique_Rotations;
 
-   procedure Find_Unique_Rotations(P: in Part_Access) is
+   procedure Find_Unique_Rotations(P: in out Part_Access) is
+      Structure: Structure_Access;
    begin
       for X in 0..3 loop
          for Y in 0..3 loop
             for Z in 0..3 loop
-               if not Exists_In_Unique_Rotations(P.Rotation_Cache(X, Y, Z), P) then
+               Rotate(P, X, Y, Z);
+               Structure := P.Structure;
+               if not Exists_In_Unique_Rotations(Structure, P) then
                   P.Unique_Count := P.Unique_Count + 1;
-                  P.Unique_Rotations(P.Unique_Count) := P.Rotation_Cache(X, Y, Z);
+                  P.Unique_Rotations(P.Unique_Count) := Structure;
 
                   P.Rotation_Pattern(P.Unique_Count) := Vec3'(X, Y, Z);
+               else
+                  Free_Memory(Structure);
                end if; 
             end loop;
          end loop;
@@ -261,16 +251,16 @@ package body Part is
    end Reset;
 
    procedure Reset_Rotations(P: in out Part_Access) is
-      dim: Vec3 := Get_Dimensions(P.Start_Struct);
+      dim: Vec3 := Get_Dimensions(P.Unique_Rotations(1));
    begin
-      P.Structure := P.Rotation_Cache(0, 0, 0);
-      P.Current_Rotation := 0;
+      P.Structure := P.Unique_Rotations(1);
+      P.Current_Rotation := 1;
    end Reset_Rotations;
 
    procedure Reset_Rotations_Internal(P: in out Part_Access) is
-      dim: Vec3 := Get_Dimensions(P.Start_Struct);
+      dim: Vec3 := Get_Dimensions(P.Unique_Rotations(1));
    begin
-      Copy(P.Rotation_Cache(0, 0, 0), P.Structure);
+      Copy(P.Unique_Rotations(1), P.Structure);
    end Reset_Rotations_Internal;
 
    procedure Rotate(P: in out Part_Access; X, Y, Z: in Integer) is
