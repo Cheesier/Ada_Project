@@ -32,13 +32,10 @@ package Part is
    function Get_Dimensions(P: in Part_Access) return Vec3;   
    function Part_To_String(P: in Part_Access) return Unbounded_String;
    function Parse_Part(Str: in Unbounded_String) return Part_Access;
+   function Parse_Figure_Part(Str: in Unbounded_String) return Part_Access;
    procedure Fix_Bounding(P: in out Part_Access);
    function Get_Nr_Of_Blocks(P: in Part_Access) return Integer;
    procedure Next_Pos(Part: in out Part_Access; Fig: in Part_Access; B: out Boolean);
-
-   procedure Rotate_X(P : in out Part_Access);
-   procedure Rotate_Y(P : in out Part_Access);
-   procedure Rotate_Z(P : in out Part_Access);
 
    function Collides(A, B: in Part_Access) return Boolean;
    function Fits_In(A, B: in Part_Access) return boolean;
@@ -48,17 +45,16 @@ package Part is
 
 private
    procedure Rotate(P: in out Part_Access; X, Y, Z: in Integer);
-   procedure Rotate_X_Internal(P : in out Part_Access);
-   procedure Rotate_Y_Internal(P : in out Part_Access);
-   procedure Rotate_Z_Internal(P : in out Part_Access);
+   procedure Rotate_X_Internal(P: in out Part_Access);
+   procedure Rotate_Y_Internal(P: in out Part_Access);
+   procedure Rotate_Z_Internal(P: in out Part_Access);
 
    function Exists_In_Unique_Rotations(S: in Structure_Access; P: in Part_Access) return Boolean;
    procedure Find_Unique_Rotations(P: in Part_Access);
 
-   type Rot_Arr is array(1..3) of Integer;
    type Cache_Arr is array(0..3, 0..3, 0..3) of Structure_Access;
    type Unique_Rotation_Arr is array(1..24) of Structure_Access;
-   type Unique_Rotation_Pattern is array(1..24) of Rot_Arr;
+   type Unique_Rotation_Pattern is array(1..24) of Vec3;
 
    type Part_Type(X, Y, Z: Integer) is
       record
@@ -66,7 +62,6 @@ private
          Bounding: AABB; -- cache for Origin_Displacement
          Structure: Structure_Access := new Structure_Type(X, Y, Z);
          Start_Struct: Structure_Access := new Structure_Type(X, Y, Z);
-         Rotations: Rot_Arr := (others => 0);
          Rotation_Cache: Cache_Arr;
 
          -- New rotation system

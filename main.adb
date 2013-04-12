@@ -24,10 +24,8 @@ procedure main is
    Solved: Boolean;
 
 begin
-   null;
-
    -- Uppkoppling mot servern och körning av solvern.
-   if Network.Init("localhost", 1234, To_Unbounded_String("VORO")) then
+   if Network.Init("astmatix", 1234, To_Unbounded_String("VORO")) then
       Put_Line("Connection Established");
 
       Handle := new Handler_Type(Get_Nr_Of_Parts(Network.Get_Parts));

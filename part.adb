@@ -32,8 +32,7 @@ package body Part is
       New_Line;
       Put("Bounding_Box: "); Coordinates.Put(P.Bounding);
       New_Line;
-      Put("Rotations: "); Put(P.Rotations(1), 0); Put(" ");
-      Put(P.Rotations(2), 0); Put(" "); Put(P.Rotations(3), 0);
+      Put("Rotations: "); Put(P.Rotation_Pattern(P.Current_Rotation));
       New_Line;
       Put("---------------------------");
    end Put;
@@ -48,13 +47,11 @@ package body Part is
    begin
       Append(U, " !");
       Put(P);
-      for I in 1..3 loop
-      --    if I = 2 then
-      --       Append(U, Integer'Image(3-P.Rotations(I)));
-      --    else
-            Append(U, Integer'Image(P.Rotations(I)));
-      --    end if;
-      end loop;
+      
+      Append(U, Integer'Image(P.Rotation_Pattern(P.Current_Rotation).X));
+      Append(U, Integer'Image(P.Rotation_Pattern(P.Current_Rotation).Y));
+      Append(U, Integer'Image(P.Rotation_Pattern(P.Current_Rotation).Z));
+
       Append(U, Integer'Image(P.Origin_Displacement.X));
       Append(U, Integer'Image(P.Origin_Displacement.Y));
       Append(U, Integer'Image(P.Origin_Displacement.Z));
@@ -64,71 +61,20 @@ package body Part is
    procedure Rotate_X_Internal(P: in out Part_Access) is
    begin
       Rotate_X(P.Structure);
-      if P.Rotations(1) /= 3 then
-         P.Rotations(1) := P.Rotations(1) + 1;
-      else
-         P.Rotations(1) := 0;
-      end if;
       P.Bounding.Max := P.Origin_Displacement + Get_Dimensions(P.Structure);
    end Rotate_X_Internal;
 
    procedure Rotate_Y_Internal(P: in out Part_Access) is
    begin
       Rotate_Y(P.Structure);
-      if P.Rotations(2) /= 3 then
-         P.Rotations(2) := P.Rotations(2) + 1;
-      else
-         P.Rotations(2) := 0;
-      end if;
       P.Bounding.Max := P.Origin_Displacement + Get_Dimensions(P.Structure);
    end Rotate_Y_Internal;
 
    procedure Rotate_Z_Internal(P: in out Part_Access) is
    begin
       Rotate_Z(P.Structure);
-      if P.Rotations(3) /= 3 then
-         P.Rotations(3) := P.Rotations(3) + 1;
-      else
-         P.Rotations(3) := 0;
-      end if;
       P.Bounding.Max := P.Origin_Displacement + Get_Dimensions(P.Structure);
    end Rotate_Z_Internal;
-
-   procedure Rotate_X(P: in out Part_Access) is
-   begin
-      if P.Rotations(1) = 3 then
-         P.Structure := P.Rotation_Cache(0, P.Rotations(2), P.Rotations(3));
-         P.Rotations(1) := 0;
-      else
-         P.Structure := P.Rotation_Cache(P.Rotations(1)+1, P.Rotations(2), P.Rotations(3));
-         P.Rotations(1) := P.Rotations(1) + 1;
-      end if;
-      P.Bounding.Max := P.Origin_Displacement + Get_Dimensions(P.Structure);
-   end Rotate_X;
-
-   procedure Rotate_Y(P: in out Part_Access) is
-   begin
-      if P.Rotations(2) = 3 then
-         P.Structure := P.Rotation_Cache(P.Rotations(1), 0, P.Rotations(3));
-         P.Rotations(2) := 0;
-      else
-         P.Structure := P.Rotation_Cache(P.Rotations(1), P.Rotations(2)+1, P.Rotations(3));
-         P.Rotations(2) := P.Rotations(2) + 1;
-      end if;
-      P.Bounding.Max := P.Origin_Displacement + Get_Dimensions(P.Structure);
-   end Rotate_Y;
-
-   procedure Rotate_Z(P: in out Part_Access) is
-   begin
-      if P.Rotations(3) = 3 then
-         P.Structure := P.Rotation_Cache(P.Rotations(1), P.Rotations(2), 0);
-         P.Rotations(3) := 0;
-      else
-         P.Structure := P.Rotation_Cache(P.Rotations(1), P.Rotations(2), P.Rotations(3)+1);
-         P.Rotations(3) := P.Rotations(3) + 1;
-      end if;
-      P.Bounding.Max := P.Origin_Displacement + Get_Dimensions(P.Structure);
-   end Rotate_Z;
 
    procedure Get_Dimensions(U: in Unbounded_String; X, Y, Z, Len: out Integer) is
       C: Character := Element(U, 1);
@@ -217,6 +163,23 @@ package body Part is
       end loop;
    end Cache_Rotations;
 
+   -- An init like this cannot be rotated
+   function Parse_Figure_Part(Str: in Unbounded_String) return Part_Access is
+      S: String := to_String(Str);
+      X, Y, Z, Len: Integer;
+      P: Part_Access;
+   begin
+      Get_Dimensions(Str, X, Y, Z, Len);
+      P := new Part_Type(X, Y, Z);
+      S(1..Length(Str)-Len) := Slice(Str, Len+1, Length(Str));
+      Parse_Structure(To_Unbounded_String(S(1..Length(Str)-Len)), P.Structure);
+      Parse_Structure(To_Unbounded_String(S(1..Length(Str)-Len)), P.Start_Struct);
+
+      Fix_Bounding(P);
+      
+      Return(P);
+   end Parse_Figure_Part;
+
    function Parse_Part(Str: in Unbounded_String) return Part_Access is
       S: String := to_String(Str);
       X, Y, Z, Len: Integer;
@@ -259,9 +222,7 @@ package body Part is
                   P.Unique_Count := P.Unique_Count + 1;
                   P.Unique_Rotations(P.Unique_Count) := P.Rotation_Cache(X, Y, Z);
 
-                  P.Rotation_Pattern(P.Unique_Count)(1) := X;
-                  P.Rotation_Pattern(P.Unique_Count)(2) := Y;
-                  P.Rotation_Pattern(P.Unique_Count)(3) := Z;
+                  P.Rotation_Pattern(P.Unique_Count) := Vec3'(X, Y, Z);
                end if; 
             end loop;
          end loop;
@@ -303,7 +264,6 @@ package body Part is
       dim: Vec3 := Get_Dimensions(P.Start_Struct);
    begin
       P.Structure := P.Rotation_Cache(0, 0, 0);
-      P.Rotations := (others => 0);
       P.Current_Rotation := 0;
    end Reset_Rotations;
 
@@ -311,7 +271,6 @@ package body Part is
       dim: Vec3 := Get_Dimensions(P.Start_Struct);
    begin
       Copy(P.Rotation_Cache(0, 0, 0), P.Structure);
-      P.Rotations := (others => 0);
    end Reset_Rotations_Internal;
 
    procedure Rotate(P: in out Part_Access; X, Y, Z: in Integer) is
@@ -340,10 +299,6 @@ package body Part is
 
       P.Structure := P.Unique_Rotations(P.Current_Rotation);
       P.Bounding.Max := P.Origin_Displacement + Get_Dimensions(P.Structure);
-
-      P.Rotations(1) := P.Rotation_Pattern(P.Current_Rotation)(1);
-      P.Rotations(2) := P.Rotation_Pattern(P.Current_Rotation)(2);
-      P.Rotations(3) := P.Rotation_Pattern(P.Current_Rotation)(3);
    end Rotate_Next;
 
    procedure Next_Pos(Part: in out Part_Access; Fig: in Part_Access; B: out Boolean) is

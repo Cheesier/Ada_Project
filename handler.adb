@@ -37,7 +37,7 @@ package body Handler is
       C: Integer := Integer'Image(Get_Nr_Of_Parts(U))'Length+1;
    begin
       Str := To_Unbounded_String(Slice(U, C, Length(U)));
-      return Parse_Part(Str);
+      return Parse_Figure_Part(Str);
    end Parse_Figure;
 
    procedure Solver(H: in out Handler_Access; Figure_String: in Unbounded_String; Solved: out Boolean) is
@@ -74,10 +74,6 @@ package body Handler is
 
             if not Colliding then
                Part.Merge(H.Parts(I), Merged(I));
-
-               -- Put("I: "); Put(I, 0); New_Line;
-               -- Put_Visual(Merged(I));
-               -- Put_Line("-----");
 
                Solver_Do(I + 1);
                Part.Subtract(H.Parts(I), Merged(I));
