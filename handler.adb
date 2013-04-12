@@ -101,7 +101,11 @@ package body Handler is
          Fix_Bounding(Merged(I));
       end loop;
       Solver_Do(1); -- Start at first part, and then dig in
+
       Free_Memory(Figure);
+      for I in H.Parts'Range loop
+         Free_Memory(Merged(I));
+      end loop;
    end Solver;
 
    function Block_Check(H: in Handler_Access; Figure: in Part_Access) return Boolean is
@@ -180,4 +184,13 @@ package body Handler is
          I := I + X*Y*Z + 1;
       end loop;
    end Split_Part_String;
+
+   procedure Free_Memory(H: in out Handler_Access) is
+   begin
+      for I in H.Parts'Range loop
+         Free_Memory(H.Parts(I));
+      end loop;
+      Free(H);
+   end Free_Memory;
+
 end Handler;

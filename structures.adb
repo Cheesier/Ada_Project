@@ -129,17 +129,11 @@ package body Structures is
 
    function Is_Occupied(S: in Structure_Access; X, Y, Z: in Integer) return Boolean is
    begin
-      --Put_Visual(S);
-      --Put(Get_Dimensions(S));
-      --Put(Vec3'(X, Y, Z)); New_Line;
       return S.Data(X, Y, Z);
    end Is_Occupied;
 
    function Is_Occupied(S: in Structure_Access; X, Y, Z: in Integer; D: in Vec3) return Boolean is
-   begin   
-      -- Put("X, Y, Z: "); Put(Vec3'(X, Y, Z)); New_Line;
-      -- Put("Displacement: "); Put(D); New_Line;
-      -- Put("Dimensions: "); Put(Get_Dimensions(S)); New_Line;
+   begin
       return Is_Occupied(S, X-D.X, Y-D.Y, Z-D.Z);
    end Is_Occupied;
 
@@ -159,7 +153,6 @@ package body Structures is
 
    function Fits_Inside(A, B: in Structure_Access; Overlap: in AABB; D: in Vec3) return Boolean is
    begin
-   --Gets either a too big Max.X or a too small D.X
       for X in Overlap.Min.X..Overlap.Max.X loop
          for Y in Overlap.Min.Y..Overlap.Max.Y loop
             for Z in Overlap.Min.Z..Overlap.Max.Z loop
