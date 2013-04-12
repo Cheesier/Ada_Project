@@ -14,6 +14,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Strings.Unbounded.Text_IO; use Ada.Strings.Unbounded.Text_IO;
+with Ada.Unchecked_Deallocation;
 
 package Part is
    type Part_Type(X, Y, Z: Integer) is private;
@@ -43,6 +44,8 @@ package Part is
    procedure Merge(A: in Part_Access; B: in out Part_Access);
    procedure Subtract(A: in Part_Access; B: in out Part_Access);
 
+   procedure Free_Memory(P: in out Part_Access);
+
 private
    procedure Rotate(P: in out Part_Access; X, Y, Z: in Integer);
    procedure Rotate_X_Internal(P: in out Part_Access);
@@ -67,5 +70,8 @@ private
          Unique_Count: Integer := 0;
          Current_Rotation: Integer := 1;
       end record;
+
+   procedure Free is new Ada.Unchecked_Deallocation
+     (Object => Part_Type, Name => Part_Access);
 
 end Part;

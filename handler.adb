@@ -101,6 +101,7 @@ package body Handler is
          Fix_Bounding(Merged(I));
       end loop;
       Solver_Do(1); -- Start at first part, and then dig in
+      Free_Memory(Figure);
    end Solver;
 
    function Block_Check(H: in Handler_Access; Figure: in Part_Access) return Boolean is

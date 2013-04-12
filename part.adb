@@ -332,4 +332,15 @@ package body Part is
       Subtract(A.Structure, A.Origin_Displacement, B.Structure);
    end Subtract;
 
+   procedure Free_Memory(P: in out Part_Access) is
+   begin
+      if P.Unique_Count = 0 then
+         Free_Memory(P.Structure);
+      else
+         for I in 1..P.Unique_Count loop
+            Free_Memory(P.Unique_Rotations(I));
+         end loop;
+      end if;
+   end Free_Memory;
+
 end Part;

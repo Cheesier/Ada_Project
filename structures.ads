@@ -13,6 +13,7 @@ with Ada.Unchecked_Deallocation;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+
 package Structures is
    type Structure_Type(iX, iY, iZ : Positive) is private;
    type Structure_Access is access Structure_Type;
