@@ -44,6 +44,7 @@ begin
       end loop;
 
       Network.Get_Result;
+      Free_Memory(Handle);
    else
       Put_Line("Failed to establish connection to server");
    end if;

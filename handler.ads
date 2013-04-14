@@ -10,6 +10,7 @@
 with Part; use Part;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Ada.Unchecked_Deallocation;
 
 package Handler is
    type Part_Arr is 
@@ -27,11 +28,18 @@ package Handler is
 
    function Parse_Figure(U: in Unbounded_String) return Part_Access;
    procedure Split_Part_String(H: in out Handler_Access; U: in Unbounded_String);
+--When comparing the figure to the Parts you have to take into
+--account the displacement!
+   
+   procedure Free_Memory(H: in out Handler_Access);
 
 private
    type Handler_Type(Nr_Of_Parts: Positive) is
       record
          Parts: Part_Arr(1..Nr_Of_Parts);
       end record;
+
+   procedure Free is new Ada.Unchecked_Deallocation
+     (Object => Handler_Type, Name => Handler_Access);
 
 end Handler;

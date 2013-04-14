@@ -283,6 +283,7 @@ package body Part is
             Free_Memory(P.Unique_Rotations(I));
          end loop;
       end if;
+      Free(P);
    end Free_Memory;
 
    ----
