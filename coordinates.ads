@@ -21,6 +21,13 @@ package Coordinates is
          Max: Vec3 := Vec3'(1, 1, 1);
       end record;
 
+   procedure Put(Item: Vec3);
+   procedure Put(Item: AABB);
+
+   function Min(A, B: in Integer) return Integer;--Added in .ads
+   function Max(A, B: in Integer) return Integer;--Added in .ads
+
+   function "="(Left, Right: in Vec3) return Boolean; --Added in .ads
    function "+"(Left, Right: in Vec3) return Vec3;
    function "+"(Left: in Vec3; Right: in Integer) return Vec3;
    function "-"(Left, Right: in Vec3) return Vec3;
@@ -29,7 +36,5 @@ package Coordinates is
    function Collides(A, B: in AABB) return Boolean;
    function Fits_In(A, B: in AABB) return Boolean;
    function Find_Overlap(A, B: in AABB) return AABB;
-   procedure Put(Item: AABB);
-   procedure Put(Item: Vec3);
    
 end Coordinates;

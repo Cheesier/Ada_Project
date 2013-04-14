@@ -8,7 +8,6 @@
 --
 -----------------------------------------------------------
 
---with figures; use figures;
 with Part; use Part;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
@@ -24,8 +23,8 @@ procedure main is
    Solved: Boolean;
 
 begin
-   -- Uppkoppling mot servern och körning av solvern.
-   if Network.Init("astmatix", 1234, To_Unbounded_String("VORO")) then
+   -- Connecting to the server and running the solver.
+   if Network.Init("astmatix", 2600, To_Unbounded_String("VORO")) then
       Put_Line("Connection Established");
 
       Handle := new Handler_Type(Get_Nr_Of_Parts(Network.Get_Parts));

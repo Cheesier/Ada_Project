@@ -20,29 +20,35 @@ package Part is
    type Part_Type(X, Y, Z: Integer) is private;
    type Part_Access is
       access all Part_Type;
-   procedure Move(P: in out Part_Access; X, Y, Z: in Integer);
 
-   procedure Put_Bounding(P: in Part_Access);
+   procedure Put(P: in Part_Access);
    procedure Put_Visual(P: in Part_Access);
+   procedure Put_Bounding(P: in Part_Access);
+   
    function Get_Result(P: in Part_Access) return Unbounded_String;
-   procedure Rotate_Next(P: in out Part_Access; B: out Boolean);
+   function Get_Nr_Of_Blocks(P: in Part_Access) return Integer;
+   function Get_Dimensions(P: in Part_Access) return Vec3;
+   procedure Get_Dimensions(U: in Unbounded_String; X, Y, Z, Len: out Integer);
+
    procedure Reset(P: in out Part_Access);
    procedure Reset_Rotations(P: in out Part_Access);
-   procedure Put(P: in Part_Access);
-   procedure Get_Dimensions(U: in Unbounded_String; X, Y, Z, Len: out Integer);
-   function Get_Dimensions(P: in Part_Access) return Vec3;   
+   procedure Empty(P: in Part_Access);
+   
    function Part_To_String(P: in Part_Access) return Unbounded_String;
    function Parse_Part(Str: in Unbounded_String) return Part_Access;
    function Parse_Figure_Part(Str: in Unbounded_String) return Part_Access;
-   procedure Fix_Bounding(P: in out Part_Access);
-   function Get_Nr_Of_Blocks(P: in Part_Access) return Integer;
-   procedure Next_Pos(Part: in out Part_Access; Fig: in Part_Access; B: out Boolean);
 
+   procedure Next_Pos(Part: in out Part_Access; Fig: in Part_Access; B: out Boolean);
+   procedure Move(P: in out Part_Access; X, Y, Z: in Integer);
+   procedure Rotate_Next(P: in out Part_Access; B: out Boolean);
+
+   function Equals(Left, Right: in Part_Access) return Boolean;--Added in .ads
    function Collides(A, B: in Part_Access) return Boolean;
    function Fits_In(A, B: in Part_Access) return boolean;
-   procedure Empty(P: in Part_Access);
+
    procedure Merge(A: in Part_Access; B: in out Part_Access);
    procedure Subtract(A: in Part_Access; B: in out Part_Access);
+   procedure Fix_Bounding(P: in out Part_Access);
 
    procedure Free_Memory(P: in out Part_Access);
 
@@ -51,6 +57,7 @@ private
    procedure Rotate_X_Internal(P: in out Part_Access);
    procedure Rotate_Y_Internal(P: in out Part_Access);
    procedure Rotate_Z_Internal(P: in out Part_Access);
+   procedure Reset_Rotations_Internal(P: in out Part_Access);--Added in .ads
 
    function Exists_In_Unique_Rotations(S: in Structure_Access; P: in Part_Access) return Boolean;
    procedure Find_Unique_Rotations(P: in out Part_Access);

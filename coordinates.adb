@@ -13,6 +13,25 @@ with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 
 package body Coordinates is
 
+   procedure Put(Item: Vec3) is
+   begin
+      Put("(");
+      Put(Item.X, 0);
+      Put(",");
+      Put(Item.Y, 0);
+      Put(",");
+      Put(Item.Z, 0);
+      Put(")");
+   end Put;
+
+   procedure Put(Item: AABB) is
+   begin
+      Put(Item.Min);
+      Put(Item.Max);
+   end Put;
+
+   ----
+
    function Min(A, B: in Integer) return Integer is
    begin
       if A < B then
@@ -30,6 +49,8 @@ package body Coordinates is
          return B;
       end if;
    end Max;
+
+   ----
 
    function "="(Left, Right: in Vec3) return Boolean is
    begin
@@ -59,22 +80,7 @@ package body Coordinates is
       return Ret;
    end "-";
 
-   procedure Put(Item: Vec3) is
-   begin
-      Put("(");
-      Put(Item.X, 0);
-      Put(",");
-      Put(Item.Y, 0);
-      Put(",");
-      Put(Item.Z, 0);
-      Put(")");
-   end Put;
-
-   procedure Put(Item: AABB) is
-   begin
-      Put(Item.Min);
-      Put(Item.Max);
-   end Put;
+   ----
    
    function Collides(A, B: in AABB) return Boolean is
    begin

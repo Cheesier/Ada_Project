@@ -21,85 +21,9 @@ package body Network is
    Last_Packet: Packet_Type;
    Parts: Unbounded_String;
    Figure: Unbounded_String;
-   
-   -- Gets an entire message back from server
-   procedure Get_Packet is
-      Blank: Character;
-   begin
-      Get(Socket, Last_Packet.Time);
-      Get(Socket, Blank);
-      Get(Socket, Last_Packet.Header);
-      Get(Socket, Blank);
-      Get_Line(Socket, Last_Packet.Message);
-   end Get_Packet;
 
-   function Append_Zero(Value: in Natural) return Unbounded_String is
-      Ret: Unbounded_String;
-   begin
-      if Value < 10 then
-         Append(Ret, '0');
-      end if;
-      Append(Ret, Trim(Integer'Image(Value), Ada.Strings.Left));
-      return Ret;
-   end Append_Zero;
+   ----
 
-   function Get_Time return Unbounded_String is
-      Now: Ada.Calendar.Time := Ada.Calendar.Clock;
-      Ret: Unbounded_String;
-   begin
-      Ret := Append_Zero(Hour(Now)) & ":" &
-          Append_Zero(Minute(Now)) & ":" &
-          Append_Zero(Second(Now)) & " ";
-      return Ret;
-   end Get_Time;
-
-   procedure Send(Header: in Character; Message: in Unbounded_String) is
-   begin
-      Put(Socket, Get_Time);
-      Put(Socket, Header);
-      Put(Socket, ' ');
-      Put(Socket, Message);
-      New_Line(Socket);
-   end Send;
-
-   procedure Send(Header: in Character; Message: in Integer) is
-   begin
-      Send(Header, To_Unbounded_String(Integer'Image(Message)));
-   end Send;
-   
-   function Get_Parts return Unbounded_String is
-   begin
-      return Parts;
-   end Get_Parts;
-   
-   function Get_Figure return Unbounded_String is
-   begin
-      return Figure;
-   end Get_Figure;
-
-   
-   function Connect(Address: in String; Port: Natural) return Boolean is
-   begin
-      Initiate(Socket);
-      Connect(Socket, Address, Port);
-      Get_Packet;
-      return Last_Packet.Message = "OK";
-   end Connect;
-   
-   
-   function Send_Nickname(Nickname: in Unbounded_String) return Boolean is
-   begin
-      Send('N', Nickname);
-      Get_Packet;
-      return Last_Packet.Message = "OK";
-   end Send_Nickname;
-   
-   procedure Recieve_Figure is
-   begin
-      Figure := Last_Packet.Message;
-   end Recieve_Figure;
-
-   
    function Init(Address: in String; Port: in Positive; Nick: in Unbounded_String)
                 return Boolean is
       Nickname: Unbounded_String := Nick;
@@ -125,6 +49,102 @@ package body Network is
       return True;
    end Init;
 
+   procedure Send(Header: in Character; Message: in Unbounded_String) is
+   begin
+      Put(Socket, Get_Time);
+      Put(Socket, Header);
+      Put(Socket, ' ');
+      Put(Socket, Message);
+      New_Line(Socket);
+   end Send;
+
+   procedure Send(Header: in Character; Message: in Integer) is
+   begin
+      Send(Header, To_Unbounded_String(Integer'Image(Message)));
+   end Send;
+
+   function Connect(Address: in String; Port: Natural) return Boolean is
+   begin
+      Initiate(Socket);
+      Connect(Socket, Address, Port);
+      Get_Packet;
+      return Last_Packet.Message = "OK";
+   end Connect;
+   
+   function Send_Nickname(Nickname: in Unbounded_String) return Boolean is
+   begin
+      Send('N', Nickname);
+      Get_Packet;
+      return Last_Packet.Message = "OK";
+   end Send_Nickname;
+
+   ----
+   
+   function Get_Parts return Unbounded_String is
+   begin
+      return Parts;
+   end Get_Parts;
+   
+   function Get_Figure return Unbounded_String is
+   begin
+      return Figure;
+   end Get_Figure;
+
+   -- Gets an entire message back from server
+   procedure Get_Packet is
+      Blank: Character;
+   begin
+      Get(Socket, Last_Packet.Time);
+      Get(Socket, Blank);
+      Get(Socket, Last_Packet.Header);
+      Get(Socket, Blank);
+      Get_Line(Socket, Last_Packet.Message);
+   end Get_Packet;
+
+   function Get_Time return Unbounded_String is
+      Now: Ada.Calendar.Time := Ada.Calendar.Clock;
+      Ret: Unbounded_String;
+   begin
+      Ret := Append_Zero(Hour(Now)) & ":" &
+          Append_Zero(Minute(Now)) & ":" &
+          Append_Zero(Second(Now)) & " ";
+      return Ret;
+   end Get_Time;
+
+   procedure Get_Result is
+   begin
+      -- we already got the packet from Get_Answer
+      Put("Corrent, Fail, Position: ");
+      Put_Line(Last_Packet.Message);
+
+      Get_Packet;
+      if Last_Packet.Header = 'U' then
+         Put("Got a new Position: ");
+         Put(Last_Packet.Message);
+         Get_Packet; -- get the AllDone packet
+      end if;
+
+      Put("Current Position: ");
+      Put_Line(Last_Packet.Message);
+      Terminate_Session;
+   end Get_Result;
+
+   procedure Recieve_Figure is
+   begin
+      Figure := Last_Packet.Message;
+   end Recieve_Figure;
+
+   ----
+
+   function Append_Zero(Value: in Natural) return Unbounded_String is
+      Ret: Unbounded_String;
+   begin
+      if Value < 10 then
+         Append(Ret, '0');
+      end if;
+      Append(Ret, Trim(Integer'Image(Value), Ada.Strings.Left));
+      return Ret;
+   end Append_Zero;
 
    --------------------------------------------------------
 
@@ -160,24 +180,6 @@ package body Network is
    end Get_Answer;
 
    --------------------------------------------------------
-
-   procedure Get_Result is
-   begin
-      -- we already got the packet from Get_Answer
-      Put("Corrent, Fail, Position: ");
-      Put_Line(Last_Packet.Message);
-
-      Get_Packet;
-      if Last_Packet.Header = 'U' then
-         Put("Got a new Position: ");
-         Put(Last_Packet.Message);
-         Get_Packet; -- get the AllDone packet
-      end if;
-
-      Put("Current Position: ");
-      Put_Line(Last_Packet.Message);
-      Terminate_Session;
-   end Get_Result;
 
    procedure Terminate_Session is
    begin

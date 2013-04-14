@@ -29,24 +29,7 @@ package body Structures is
       end loop;
    end Put_Visual;
 
-   function Equals(L, R: in Structure_Access) return Boolean is
-   begin
-      -- check dimensions first
-      if L.X /= R.X or L.Y /= R.Y or L.Z /= R.Z then
-         return False;
-      end if;
-
-      for X in 1..L.X loop
-         for Y in 1..L.Y loop
-            for Z in 1..L.Z loop
-               if Is_Occupied(L, X, Y, Z) and not Is_Occupied(R, X, Y, Z) then
-                  return False;
-               end if;
-            end loop;
-         end loop;
-      end loop;
-      return True;
-   end Equals;
+   ----
 
    procedure Rotate_X(S : in out Structure_Access) is
       Temp : Structure_Access := new Structure_Type(S.X, S.Z, S.Y);
@@ -96,6 +79,8 @@ package body Structures is
       S := Temp;
    end Rotate_Z;
 
+   ----
+
    function Get_Dimensions(S: in Structure_Access) return Vec3 is
    begin
       return Vec3'(S.X, S.Y, S.Z);
@@ -116,32 +101,7 @@ package body Structures is
       return Count;
    end Get_Nr_Of_Blocks;
 
-   procedure Add(S: in out Structure_Access; X, Y, Z: in Integer) is
-   begin
-      S.Data(X, Y, Z) := True;
-   end Add;
-
-   procedure Set(S: in out Structure_Access; X, Y, Z: in Integer; Value: in Boolean) is
-   begin
-      S.Data(X, Y, Z) := Value;
-   end Set;
-
-
-   function Is_Occupied(S: in Structure_Access; X, Y, Z: in Integer) return Boolean is
-   begin
-      --Put_Visual(S);
-      --Put(Get_Dimensions(S));
-      --Put(Vec3'(X, Y, Z)); New_Line;
-      return S.Data(X, Y, Z);
-   end Is_Occupied;
-
-   function Is_Occupied(S: in Structure_Access; X, Y, Z: in Integer; D: in Vec3) return Boolean is
-   begin   
-      -- Put("X, Y, Z: "); Put(Vec3'(X, Y, Z)); New_Line;
-      -- Put("Displacement: "); Put(D); New_Line;
-      -- Put("Dimensions: "); Put(Get_Dimensions(S)); New_Line;
-      return Is_Occupied(S, X-D.X, Y-D.Y, Z-D.Z);
-   end Is_Occupied;
+   ----
 
    function Collides(A, B: in Structure_Access; Overlap: in AABB; Da, Db: in Vec3) return Boolean is
    begin
@@ -159,7 +119,6 @@ package body Structures is
 
    function Fits_Inside(A, B: in Structure_Access; Overlap: in AABB; D: in Vec3) return Boolean is
    begin
-   --Gets either a too big Max.X or a too small D.X
       for X in Overlap.Min.X..Overlap.Max.X loop
          for Y in Overlap.Min.Y..Overlap.Max.Y loop
             for Z in Overlap.Min.Z..Overlap.Max.Z loop
@@ -171,6 +130,37 @@ package body Structures is
       end loop;
       return True;
    end Fits_Inside;
+
+   function Equals(L, R: in Structure_Access) return Boolean is
+   begin
+      -- check dimensions first
+      if L.X /= R.X or L.Y /= R.Y or L.Z /= R.Z then
+         return False;
+      end if;
+
+      for X in 1..L.X loop
+         for Y in 1..L.Y loop
+            for Z in 1..L.Z loop
+               if Is_Occupied(L, X, Y, Z) and not Is_Occupied(R, X, Y, Z) then
+                  return False;
+               end if;
+            end loop;
+         end loop;
+      end loop;
+      return True;
+   end Equals;
+
+   function Is_Occupied(S: in Structure_Access; X, Y, Z: in Integer) return Boolean is
+   begin
+      return S.Data(X, Y, Z);
+   end Is_Occupied;
+
+   function Is_Occupied(S: in Structure_Access; X, Y, Z: in Integer; D: in Vec3) return Boolean is
+   begin
+      return Is_Occupied(S, X-D.X, Y-D.Y, Z-D.Z);
+   end Is_Occupied;
+
+   ----
 
    procedure Parse_Structure(Str : in Unbounded_String; Struct : in out Structure_Access) is
       S :  String := To_String(Str);
@@ -217,12 +207,7 @@ package body Structures is
       return S;
    end;
 
-   procedure Copy(A, B: in out Structure_Access) is
-      D: Vec3 := Get_Dimensions(A);
-   begin
-      B := new Structure_Type(D.X, D.Y, D.Z);
-      B.all := A.All;
-   end Copy;
+   ----
 
    procedure Merge(A: in Structure_Access; D: in Vec3; B: in out Structure_Access) is
    begin
@@ -237,6 +222,18 @@ package body Structures is
       end loop;
    end Merge;
 
+   procedure Copy(A, B: in out Structure_Access) is
+      D: Vec3 := Get_Dimensions(A);
+   begin
+      B := new Structure_Type(D.X, D.Y, D.Z);
+      B.all := A.All;
+   end Copy;
+
+   procedure Add(S: in out Structure_Access; X, Y, Z: in Integer) is
+   begin
+      S.Data(X, Y, Z) := True;
+   end Add;
+
    procedure Subtract(A: in Structure_Access; D: in Vec3; B: in out Structure_Access) is
    begin
       for X in 1..A.X loop
@@ -250,10 +247,17 @@ package body Structures is
       end loop;
    end Subtract;
 
+   procedure Set(S: in out Structure_Access; X, Y, Z: in Integer; Value: in Boolean) is
+   begin
+      S.Data(X, Y, Z) := Value;
+   end Set;
+
    procedure Empty(S: out Structure_Access) is
    begin
       S.Data := (Others => (Others => (Others => False)));
    end Empty;
+
+   ----
 
    procedure Free_Memory(S: in out Structure_Access) is
    begin

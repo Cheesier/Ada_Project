@@ -22,6 +22,8 @@ package body Handler is
       end loop;
    end Put;
 
+   ----
+
    function Get_Result(H: in Handler_Access; Id: in Integer) return Unbounded_String is
       U: Unbounded_String;
    begin
@@ -32,13 +34,24 @@ package body Handler is
       return U;
    end Get_Result;
 
-   function Parse_Figure(U: in Unbounded_String) return Part_Access is
-      Str : Unbounded_String;
-      C: Integer := Integer'Image(Get_Nr_Of_Parts(U))'Length+1;
+   function Get_Nr_Of_Parts(S: in Unbounded_String) return Integer is
+      Nr_Of_Fig :Unbounded_String;
+      I: Integer := 2;
+      E: Integer := 1;
+      C: Character := Element(S, 1);
+      Count: Integer;
    begin
-      Str := To_Unbounded_String(Slice(U, C, Length(U)));
-      return Parse_Figure_Part(Str);
-   end Parse_Figure;
+      while C /= ' ' loop
+         Append(Nr_Of_Fig, C);
+         C := Element(S, I);
+         I := I + 1;
+         E:= E + 1;
+      end loop;
+      Count := Integer'Value(To_String(Nr_Of_Fig));
+      return Count;
+   end Get_Nr_Of_Parts;
+
+   ----
 
    procedure Solver(H: in out Handler_Access; Figure_String: in Unbounded_String; Solved: out Boolean) is
       Figure: Part_Access := Parse_Figure(Figure_String);
@@ -47,8 +60,7 @@ package body Handler is
 
       procedure Solver_Do(I: in Integer) is
          Colliding: Boolean := False;
-         Has_Next_Pos: Boolean := True;
-         
+         Has_Next_Pos: Boolean := True;  
       begin
          if I > H.Parts'Length then -- Checks if it is solved
             Solved := True;
@@ -90,7 +102,6 @@ package body Handler is
 
          end loop;
       end Solver_Do;
-
    begin
       Solved := False;
       if not Block_Check(H, Figure) then
@@ -113,23 +124,15 @@ package body Handler is
       return Count = Get_Nr_Of_Blocks(Figure);
    end Block_Check;
 
+   ----
    
-   function Get_Nr_Of_Parts(S: in Unbounded_String) return Integer is
-      Nr_Of_Fig :Unbounded_String;
-      I: Integer := 2;
-      E: Integer := 1;
-      C: Character := Element(S, 1);
-      Count: Integer;
+   function Parse_Figure(U: in Unbounded_String) return Part_Access is
+      Str : Unbounded_String;
+      C: Integer := Integer'Image(Get_Nr_Of_Parts(U))'Length+1;
    begin
-      while C /= ' ' loop
-         Append(Nr_Of_Fig, C);
-         C := Element(S, I);
-         I := I + 1;
-         E:= E + 1;
-      end loop;
-      Count := Integer'Value(To_String(Nr_Of_Fig));
-      return Count;
-   end Get_Nr_Of_Parts;
+      Str := To_Unbounded_String(Slice(U, C, Length(U)));
+      return Parse_Figure_Part(Str);
+   end Parse_Figure;
    
    procedure Split_Part_String(H: in out Handler_Access; U: in Unbounded_String) is
       K: Integer := Integer'Image(Get_Nr_Of_Parts(U))'Length+1;
@@ -180,4 +183,5 @@ package body Handler is
          I := I + X*Y*Z + 1;
       end loop;
    end Split_Part_String;
+   
 end Handler;
