@@ -25,7 +25,7 @@ package Network is
    function Get_Parts return Unbounded_String;
    function Get_Figure return Unbounded_String;
    procedure Get_Packet;--Added in .ads
-   function Get_Time;--Added in .ads
+   function Get_Time return Unbounded_String;--Added in .ads
    procedure Get_Result;
    procedure Recieve_Figure;--Added in .ads
 

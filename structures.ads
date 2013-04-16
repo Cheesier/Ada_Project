@@ -40,8 +40,8 @@ package Structures is
    procedure Copy(A, B: in out Structure_Access);
    procedure Add(S: in out Structure_Access; X,Y,Z: in Integer);
    procedure Subtract(A: in Structure_Access; D: in Vec3; B: in out Structure_Access);
-   procedure Set(S: in out Structure_Access, X, Y, Z: in Integer; Value: in Boolean);
-   procedure Empty(S: out Structure_Access);
+   procedure Set(S: in out Structure_Access; X, Y, Z: in Integer; Value: in Boolean);
+   procedure Empty(S: in out Structure_Access);--Added "in"
    --Added Set in .ads
 
    procedure Free_Memory(S: in out Structure_Access);   

@@ -252,7 +252,7 @@ package body Structures is
       S.Data(X, Y, Z) := Value;
    end Set;
 
-   procedure Empty(S: out Structure_Access) is
+   procedure Empty(S: in out Structure_Access) is
    begin
       S.Data := (Others => (Others => (Others => False)));
    end Empty;
